@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { cv } from '../data/cv';
+import { site } from '../config';
+
+const { summary, sections, skills } = cv;
+---
+
+<BaseLayout
+  title="Curriculum Vitae"
+  description="Curriculum vitae and full academic record."
+>
+  <section class="page-head">
+    <div class="container">
+      <div class="page-head-row">
+        <h1>Curriculum Vitae</h1>
+        <div class="no-print" style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          {site.cvPdf && (
+            <a class="btn btn-secondary" href={site.cvPdf}>Download PDF</a>
+          )}
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="window.print()"
+          >
+            Print / Save as PDF
+          </button>
+        </div>
+      </div>
+      <p>{summary}</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {sections.map((section) => (
+        <div class="cv-section">
+          <h2>{section.title}</h2>
+          {section.entries.map((entry) => (
+            <div class="cv-entry">
+              <div class="cv-entry-head">
+                <div>
+                  <span class="cv-entry-title">{entry.title}</span>
+                  {entry.where && (
+                    <span class="cv-entry-where"> — {entry.where}</span>
+                  )}
+                </div>
+                <span class="cv-entry-date">{entry.date}</span>
+              </div>
+              {entry.detail && (
+                <p class="cv-entry-detail">{entry.detail}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+
+      <div class="cv-section">
+        <h2>Skills</h2>
+        <ul class="skills-list">
+          {skills.map((skill) => (
+            <li class="skill">{skill}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

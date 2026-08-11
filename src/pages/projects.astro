@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects';
+---
+
+<BaseLayout
+  title="Projects"
+  description="Software and analysis projects from my research group."
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Projects</h1>
+      <p>
+        Open-source analysis tools and software developed as part of my
+        research. Each card links out to the public GitHub repository and, where
+        one exists, to the related publication.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <ul class="project-list">
+        {projects.map((p) => <ProjectCard project={p} />)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

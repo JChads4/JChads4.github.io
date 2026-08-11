@@ -1,0 +1,107 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { site, selfAuthorNames } from '../config';
+
+interface Props {
+  pub: CollectionEntry<'publications'>;
+  /** Render the abstract in a collapsed <details> block. */
+  showAbstract?: boolean;
+}
+
+const { pub, showAbstract = false } = Astro.props;
+const { title, authors, venue, year, type, doi, arxiv, pdf, abstract, keywords } =
+  pub.data;
+
+const typeLabel: Record<string, string> = {
+  journal: 'Journal',
+  conference: 'Conference',
+  workshop: 'Workshop',
+  preprint: 'Preprint',
+  thesis: 'Thesis',
+};
+
+// Accept a bare ID ("10.xxxx/yyy", "2405.00000") or a full URL so pasting
+// either from a publisher's copy button can't produce a broken relative link.
+const doiUrl = doi
+  ? doi.startsWith('http')
+    ? doi
+    : `https://doi.org/${doi}`
+  : undefined;
+const arxivUrl = arxiv
+  ? arxiv.startsWith('http')
+    ? arxiv
+    : `https://arxiv.org/abs/${arxiv}`
+  : undefined;
+
+// Links, most authoritative first. Rendered as pills below the citation.
+const links = [
+  doiUrl && { label: 'DOI', url: doiUrl },
+  arxivUrl && { label: 'arXiv', url: arxivUrl },
+  pdf && { label: 'PDF', url: pdf },
+].filter((l): l is { label: string; url: string } => Boolean(l));
+
+// Primary target for the title (PDF preferred, then arXiv, then DOI).
+const titleUrl = pdf ?? arxivUrl ?? doiUrl;
+---
+
+<li class="pub">
+  <div class="pub-head">
+    <span class="pub-type">{typeLabel[type] ?? type}</span>
+    <time class="pub-year">{year}</time>
+  </div>
+
+  <h3 class="pub-title">
+    {titleUrl ? (
+      <a href={titleUrl} target="_blank" rel="noopener noreferrer">
+        {title}
+      </a>
+    ) : (
+      title
+    )}
+  </h3>
+
+  <p class="pub-authors">
+    {authors.map((author, i) => (
+      <>
+        {i > 0 && ', '}
+        {selfAuthorNames.includes(author) ? (
+          <span class="self">{author}</span>
+        ) : (
+          author
+        )}
+      </>
+    ))}
+  </p>
+
+  <p class="pub-venue">{venue}</p>
+
+  {keywords.length > 0 && (
+    <ul class="chip-row" aria-label="Keywords">
+      {keywords.map((k) => (
+        <li class="chip">{k}</li>
+      ))}
+    </ul>
+  )}
+
+  {links.length > 0 && (
+    <div class="pub-links">
+      {links.map((l) => (
+        <a
+          class="pub-link"
+          href={l.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {l.label}
+        </a>
+      ))}
+    </div>
+  )}
+
+  {showAbstract && abstract && (
+    <details class="abstract">
+      <summary>Abstract</summary>
+      <p>{abstract}</p>
+    </details>
+  )}
+</li>

@@ -1,0 +1,27 @@
+---
+import { site, activeSocials } from '../config';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-row">
+      <p class="footer-meta">© {year} {site.name}</p>
+      {activeSocials.length > 0 && (
+        <ul class="footer-social">
+          {activeSocials.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener noreferrer">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+    <p class="footer-note">
+      {site.role} · {site.affiliation}
+    </p>
+  </div>
+</footer>

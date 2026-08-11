@@ -1,0 +1,51 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  headingLevel?: 2 | 3;
+}
+
+const { project, headingLevel = 2 } = Astro.props;
+const Title = headingLevel === 2 ? 'h2' : 'h3';
+const { title, tagline, summary, repoUrl, paperUrl, status, role, keywords } =
+  project;
+---
+
+<li class="project-item">
+  <div class="project-head">
+    <Title class="project-title">{title}</Title>
+    {status && <span class="project-status">{status}</span>}
+  </div>
+
+  {tagline && <p class="project-tagline">{tagline}</p>}
+  <p class="project-summary">{summary}</p>
+
+  {keywords.length > 0 && (
+    <ul class="chip-row" aria-label="Keywords">
+      {keywords.map((k) => <li class="chip">{k}</li>)}
+    </ul>
+  )}
+
+  <div class="project-links">
+    <a
+      class="pub-link"
+      href={repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      GitHub
+    </a>
+    {paperUrl && (
+      <a
+        class="pub-link"
+        href={paperUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Paper
+      </a>
+    )}
+    <span class="project-role">{role}</span>
+  </div>
+</li>

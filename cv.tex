@@ -1,0 +1,197 @@
+%----------------------------------------------------------------------------------------
+%       DOCUMENT DEFINITION
+%----------------------------------------------------------------------------------------
+\documentclass[a4paper,11pt]{article}
+
+%----------------------------------------------------------------------------------------
+%       PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage{url}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[a4paper,margin=1.7cm]{geometry}
+\usepackage{cmbright}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{fontawesome5}
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+
+\raggedbottom
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+%----------------------------------------------------------------------------------------
+%       TITLE FORMATTING
+%----------------------------------------------------------------------------------------
+\titleformat{\section}{\large\bfseries\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{6pt}
+
+%----------------------------------------------------------------------------------------
+%       BEGIN DOCUMENT
+%----------------------------------------------------------------------------------------
+\begin{document}
+\pagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+%       HEADER
+%----------------------------------------------------------------------------------------
+\begin{center}
+    {\LARGE Jamie Chadderton, PhD -- CV} \\[10pt]
+    \href{https://github.com/JChads4}{\raisebox{-0.05\height}\faGithub\ JChads4} \ $|$ \
+    \href{https://www.linkedin.com/in/jamie-chadderton-a5597b17b/}{\raisebox{-0.05\height}\faLinkedin\ jamie-chadderton} \ $|$ \
+    \href{mailto:jamiechadderton8@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ jamiechadderton8@gmail.com} \ $|$ \
+    \href{tel:+447951706847}{\raisebox{-0.05\height}\faPhone*\ +44\ 7951\ 706847}
+\end{center}
+
+%----------------------------------------------------------------------------------------
+%       1. EDUCATION
+%----------------------------------------------------------------------------------------
+\section{Education}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+Feb 2026 & \textbf{PhD in Experimental Nuclear Physics}, University of Liverpool, UK \\
+& \emph{Thesis: ``Conversion electron and gamma-ray spectroscopy of $^{250}$Fm''} \\[4pt]
+Jul 2021 & \textbf{MPhys in Physics (First Class Honours)}, University of Liverpool, UK \\
+& \emph{Thesis: ``Investigating single-proton orbitals in nearly magic nuclei''}
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       2. RESEARCH EXPERIENCE
+%----------------------------------------------------------------------------------------
+\section{Research Experience}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+Oct 2025--Present & \textbf{Honorary Research Fellow}, University of Liverpool, UK \\
+& \emph{Completing publications from doctoral research and continuing collaborative analysis with LBNL.} \\[4pt]
+
+Oct 2021--Feb 2026 & \textbf{PhD Researcher}, University of Liverpool, UK \\
+& \emph{Contributed to experimental nuclear physics studies in the heavy and superheavy elements in collaboration with the University of Jyväskylä (Finland) and Lawrence Berkeley National Laboratory (USA). Specializing in in-beam and decay spectroscopy using conversion electron and gamma-ray techniques for fusion-evaporation and transfer reaction experiments. Experienced with gas-filled and vacuum mode separators, \textbf{Geant4 modeling} of reactions and detector response, and developing open-source analysis tools.} \\[4pt]
+
+Mar 2023--Present & \textbf{Research Collaborator}, Lawrence Berkeley National Laboratory, USA \\
+& \emph{Contributing to the superheavy element program at the 88-Inch Cyclotron. Led the \textbf{construction and commissioning of a PPAC detector} for the Berkeley Gas-filled Separator. Leading the analysis of commissioning data and the forthcoming publication.} \\[4pt]
+
+Sep 2023--Aug 2024 & \textbf{Visiting Doctoral Researcher}, University of Jyv\"{a}skyl\"{a}, Finland \\
+& \emph{Served as Local Liaison for international experiments. Operated/maintained HPGe and silicon detector arrays, recoil separators, and \textbf{digital DAQ systems}. Developed sorting codes for real-time and offline analysis.}
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       3. COMPUTATIONAL EXPERIENCE
+%----------------------------------------------------------------------------------------
+\section{Computational Experience}
+
+\begin{tabularx}{\linewidth}{@{}p{3.5cm} X@{}}
+\textbf{Nuclear Data} & Experience retrieving and processing data from ENSDF and BrIcc libraries. Developed Python scripts to query nuclear data APIs for automated extraction of decay schemes, level properties, and cross-section data. \\[4pt]
+
+% \textbf{Machine Learning} & Developing supervised learning methods for classification of digitized detector waveforms, including pileup identification in high-rate experiments. Familiar with neural networks, k-nearest neighbors, naive Bayes, and logistic regression classifiers. \\[4pt]
+
+\textbf{Machine Learning} & Familiar with supervised learning methods including neural networks, k-nearest neighbors, naive Bayes, and logistic regression. Currently exploring applications to digitized detector waveform classification. \\[4pt]
+
+\textbf{Simulation} & Geant4 simulations of fusion-evaporation reactions and detector response. Monte Carlo modeling of nuclear decay chains. \\[4pt]
+
+\textbf{Languages \& Tools} & Python (proficient), C++, Java, Bash, \LaTeX. ROOT, Geant4, Git, Linux.
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       4. SOFTWARE
+%----------------------------------------------------------------------------------------
+\section{Open-Source Software}
+\begin{tabularx}{\linewidth}{@{}p{3.5cm} X@{}}
+\href{https://github.com/JChads4/PATRON}{\textbf{PATRON}} & Monte Carlo simulation of nuclear decay chains with detector-response modeling. \\[4pt]
+\href{https://github.com/JChads4/EPIC}{\textbf{EPIC}} & Framework for processing conversion electron and gamma-ray coincidence data. \\[4pt]
+\href{https://github.com/JChads4/EffWizard}{\textbf{EffWizard}} & Automated HPGe efficiency calculator; deployed at JYFL. \\[4pt]
+\href{https://github.com/JChads4/AddbackSimulator}{\textbf{AddbackSimulator}} & Simulation of gamma-ray add-back in segmented HPGe arrays. \\[4pt]
+\href{https://github.com/JChads4/Digital-signal-processing}{\textbf{Signal Processing}} & Modeled signal formation in HPGe detectors and preamplifiers.
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       5. PUBLICATIONS
+%----------------------------------------------------------------------------------------
+\section{Publications}
+\begin{enumerate}[leftmargin=1.5em, itemsep=4pt, topsep=2pt]
+    \item ``Toward the Discovery of New Elements: Production of Livermorium ($Z=116$) with $^{50}$Ti'',
+    J.~M.~Gates, R.~Orford, D.~Rudolph, \ldots\ \textbf{J.~Chadderton}, \emph{et~al.},
+    \textit{Phys.\ Rev.\ Lett.} \textbf{133}, 172502 (2024).
+    doi: \href{https://doi.org/10.1103/PhysRevLett.133.172502}{10.1103/PhysRevLett.133.172502}
+
+    \item ``Direct Measurement of Three Different Deformations Near the Ground State in an Atomic Nucleus'',
+    A.~Montes~Plaza, J.~Pakarinen, P.~Papadakis, \ldots\ \textbf{J.~Chadderton}, \emph{et~al.},
+    \textit{Commun.\ Phys.} \textbf{8}, 8 (2025).
+    doi: \href{https://doi.org/10.1038/s42005-024-01928-8}{10.1038/s42005-024-01928-8}
+
+    \item ``The Advanced Plunger-Particle detector Array -- APPA'',
+    E.~Uusikyl\"{a}, P.~Ruotsalainen, T.~Grahn, \ldots\ \textbf{J.~Chadderton}, \emph{et~al.},
+    \textit{Eur.\ Phys.\ J.\ A} \textbf{62}, 25 (2026).
+    doi: \href{https://doi.org/10.1140/epja/s10050-025-01769-1}{10.1140/epja/s10050-025-01769-1}
+\end{enumerate}
+
+\textbf{In Preparation:}
+\begin{itemize}[nosep, leftmargin=1.5em]
+    \item \textbf{J.~Chadderton} \emph{et~al.}, ``Conversion electron and gamma-ray spectroscopy of $^{250}$Fm''
+    \item \textbf{J.~Chadderton} \emph{et~al.}, ``Development of a PPAC detector for superheavy element studies''
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%       6. PRESENTATIONS
+%----------------------------------------------------------------------------------------
+\section{Presentations}
+\begin{tabularx}{\linewidth}{@{}p{3.5cm} X@{}}
+\textbf{Invited Seminars} & LBNL Nuclear Physics Symposium (2024); University of Jyv\"{a}skyl\"{a} (2023) \\[4pt]
+\textbf{Contributed Talks} & IOP Nuclear Physics Conference (2023, 2025); STFC Summer School (2024); UK ECR Workshop (2025); Mazurian Lakes Conference (2023)
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       7. GRANTS & AWARDS
+%----------------------------------------------------------------------------------------
+\section{Grants \& Awards}
+\begin{itemize}[nosep, leftmargin=1.5em]
+    \item \textbf{STFC Long-Term Attachment Grant} (2023--2024): 10-month research residency at JYFL.
+    \item \textbf{STFC Doctoral Training Studentship} (2021--2025): Full PhD funding.
+    \item \textbf{Honorary Research Fellowship}, University of Liverpool (2025--Present).
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%       8. TEACHING
+%----------------------------------------------------------------------------------------
+\section{Teaching}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+2021--2025 & \textbf{Undergraduate Laboratory Instructor}, University of Liverpool \\
+& \emph{Led weekly lab sessions for 20+ students. Delivered instruction in Python-based data analysis and scientific writing. Progressed to Senior Lab Coach, supervising junior TAs.}
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%       9. REFERENCES
+%----------------------------------------------------------------------------------------
+\section{References}
+
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+
+\textbf{Prof. Rolf-Dietmar Herzberg} & 
+\textbf{Position:} Professor of Physics, University of Liverpool \\
+& \textbf{Email:} \href{mailto:[rdh@liverpool.ac.uk]}{rdh@liverpool.ac.uk} \\
+& \textbf{Phone:} +44 151 794 3382 \\
+& \textbf{Relationship:} PhD supervisor and research collaborator \\[10pt]
+
+\vspace{10pt}
+
+\textbf{Dr. Jacklyn Gates} & 
+\textbf{Position:} Heavy Element Group Lead \& Staff Scientist, Lawrence Berkeley National Laboratory \\
+& \textbf{Email:} \href{mailto:[JMGates@lbl.gov]}{JMGates@lbl.gov} \\
+& \textbf{Relationship:} Research collaboration lead scientist \\[10pt]
+
+\textbf{Prof. David Joss} & 
+\textbf{Position:} Professor of Physics, University of Liverpool \\
+& \textbf{Email:} \href{mailto:[djt@liverpool.ac.uk]}{djt@liverpool.ac.uk} \\
+& \textbf{Relationship:} Research collaborator \\[10pt]
+
+\end{tabularx}
+
+\vfill
+\begin{center}
+\footnotesize Last updated: \today
+\end{center}
+
+\end{document}

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicationCard from '../components/PublicationCard.astro';
+import { getCollection } from 'astro:content';
+
+const pubs = (await getCollection('publications')).sort(
+  (a, b) =>
+    b.data.year - a.data.year || a.data.title.localeCompare(b.data.title)
+);
+
+// Group by year, descending.
+const years = [...new Set(pubs.map((p) => p.data.year))].sort(
+  (a, b) => b - a
+);
+---
+
+<BaseLayout
+  title="Publications"
+  description="Journal articles, conference papers, preprints, and other publications."
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Publications</h1>
+      <p>
+        A complete list of journal articles, conference papers, and preprints.
+        Abstracts are available inline; the full list is also mirrored on my{" "}
+        <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer">
+          Google Scholar
+        </a>{" "}
+        profile.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {pubs.length === 0 ? (
+        <p class="empty-state">No publications yet.</p>
+      ) : (
+        years.map((year) => (
+          <div class="year-group">
+            <h2 class="year-heading" id={`year-${year}`}>{year}</h2>
+            <ul class="pub-list">
+              {pubs
+                .filter((p) => p.data.year === year)
+                .map((pub) => (
+                  <PublicationCard pub={pub} showAbstract />
+                ))}
+            </ul>
+          </div>
+        ))
+      )}
+    </div>
+  </section>
+</BaseLayout>
