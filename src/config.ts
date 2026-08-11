@@ -14,11 +14,11 @@ export const site = {
   title:
     'Experimental nuclear physics — heavy and superheavy element spectroscopy',
   /** Current academic role. */
-  role: 'Honorary Research Fellow',
+  role: 'Postdoctoral Researcher',
   /** Department and university. */
-  affiliation: 'Department of Physics, University of Liverpool',
+  affiliation: 'Department of Nuclear Engineering, University of California, Berkeley',
   /** Office / lab location, shown on the Contact page. */
-  location: 'Liverpool, UK',
+  location: 'Berkeley, CA, USA',
   /** Default <meta name="description"> fallback. */
   description:
     'Academic portfolio of Jamie Chadderton, PhD — experimental nuclear physics research, publications, and CV.',

@@ -15,14 +15,16 @@
   --text-muted: #565961;
   --text-faint: #6d7078;
   --border: #e6e5e2;
-  --accent: #3f46e0;
-  --accent-strong: #3439c4;
-  --accent-soft: rgba(63, 70, 224, 0.08);
+  /* UC Berkeley palette — navy primary, gold accent */
+  --accent: #003262;          /* Berkeley Blue */
+  --accent-strong: #00234a;
+  --accent-gold: #FDB515;     /* California Gold */
+  --accent-soft: rgba(0, 50, 98, 0.08);
   --on-accent: #ffffff;
-  --link: #3f46e0;
-  --link-hover: #3439c4;
+  --link: #003262;
+  --link-hover: #00234a;
   --code-bg: #f1f0ec;
-  --focus-ring: #3439c4;
+  --focus-ring: #003262;
   --shadow-sm: 0 1px 2px rgba(20, 20, 24, 0.05);
   --shadow-md: 0 1px 2px rgba(20, 20, 24, 0.04), 0 6px 20px rgba(20, 20, 24, 0.06);
 
@@ -53,14 +55,16 @@
   --text-muted: #a2a5ae;
   --text-faint: #878b97;
   --border: #292b31;
-  --accent: #9aa1f6;
-  --accent-strong: #b6bafc;
-  --accent-soft: rgba(154, 161, 246, 0.12);
+  /* Berkeley palette, dark mode — brightened navy + warm gold */
+  --accent: #4a78b8;          /* brighter navy for dark bg contrast */
+  --accent-strong: #6f97cf;
+  --accent-gold: #FDB515;
+  --accent-soft: rgba(74, 120, 184, 0.14);
   --on-accent: #12141d;
-  --link: #aab0ff;
-  --link-hover: #c2c6ff;
+  --link: #6f97cf;
+  --link-hover: #93b6e3;
   --code-bg: #1c1e24;
-  --focus-ring: #c2c6ff;
+  --focus-ring: #93b6e3;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.28);
 }
@@ -74,14 +78,15 @@
     --text-muted: #a2a5ae;
     --text-faint: #878b97;
     --border: #292b31;
-    --accent: #9aa1f6;
-    --accent-strong: #b6bafc;
-    --accent-soft: rgba(154, 161, 246, 0.12);
+    --accent: #4a78b8;
+    --accent-strong: #6f97cf;
+    --accent-gold: #FDB515;
+    --accent-soft: rgba(74, 120, 184, 0.14);
     --on-accent: #12141d;
-    --link: #aab0ff;
-    --link-hover: #c2c6ff;
+    --link: #6f97cf;
+    --link-hover: #93b6e3;
     --code-bg: #1c1e24;
-    --focus-ring: #c2c6ff;
+    --focus-ring: #93b6e3;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.28);
   }
@@ -480,6 +485,15 @@ code {
   gap: 0.75rem;
   margin-top: 1.75rem;
   flex-wrap: wrap;
+}
+/* Berkeley-style accent: a thin gold rule under the affiliation line.
+   Sits between the bio info and the CTAs as a visual divider. */
+.berkeley-stripe {
+  height: 3px;
+  width: 4.5rem;
+  background: var(--accent-gold);
+  margin-top: 1.25rem;
+  border-radius: 2px;
 }
 
 /* --------------------------------------------------------------------------
