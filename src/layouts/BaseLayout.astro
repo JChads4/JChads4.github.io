@@ -1,0 +1,72 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { site } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title
+  ? `${title} — ${site.name}`
+  : `${site.name} — ${site.title}`;
+
+// Absolute URL for canonical + Open Graph (falls back to config if `site` unset).
+const SITE_URL = Astro.site ?? new URL(site.url);
+const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <!--
+      Stamp the theme before first paint to avoid a light/dark flash.
+      Reads localStorage, falls back to the OS preference, then the toggle
+      (in Nav) flips it. The CSS also has a prefers-color-scheme fallback
+      so the site stays correct even with JS disabled.
+    -->
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch (e) {}
+        var dark =
+          stored === 'dark' ||
+          (!stored &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute(
+          'data-theme',
+          dark ? 'dark' : 'light'
+        );
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicationCard from '../components/PublicationCard.astro';
+import ResearchCard from '../components/ResearchCard.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../config';
+import { cv } from '../data/cv';
+import { news } from '../data/news';
+
+const allPubs = await getCollection('publications');
+const selectedPubs = allPubs
+  .sort(
+    (a, b) =>
+      b.data.year - a.data.year || a.data.title.localeCompare(b.data.title)
+  )
+  .slice(0, 3);
+
+const researchItems = (await getCollection('research')).sort(
+  (a, b) => (b.data.since ?? 0) - (a.data.since ?? 0)
+);
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">{site.role}</p>
+        <h1>{site.name}</h1>
+        <p class="tagline">{site.title}</p>
+        <p class="affiliation">
+          {site.affiliation}{site.location ? ` · ${site.location}` : ''}
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/publications/">Publications</a>
+          <a class="btn btn-secondary" href="/cv/">Curriculum Vitae</a>
+          <a class="btn btn-secondary" href="/projects/">Projects</a>
+        </div>
+      </div>
+      {site.profileImage && (
+        <img
+          class="hero-portrait"
+          src={site.profileImage}
+          alt={`Portrait of ${site.name}`}
+          width="240"
+          height="320"
+          loading="eager"
+          decoding="async"
+        />
+      )}
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>About</h2>
+      </div>
+      <p class="lead">{cv.summary}</p>
+    </div>
+  </section>
+
+  <!-- Selected publications -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Selected publications</h2>
+        <a class="section-link" href="/publications/">All publications →</a>
+      </div>
+      {selectedPubs.length === 0 ? (
+        <p class="empty-state">No publications yet.</p>
+      ) : (
+        <ul class="pub-list">
+          {selectedPubs.map((pub) => <PublicationCard pub={pub} />)}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <!-- Research areas -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Research areas</h2>
+        <a class="section-link" href="/research/">View research →</a>
+      </div>
+      {researchItems.length === 0 ? (
+        <p class="empty-state">No research areas yet.</p>
+      ) : (
+        <ul class="research-list">
+          {researchItems.map((item) => <ResearchCard item={item} />)}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <!-- News -->
+  {news.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>News</h2>
+        </div>
+        <ul class="news-list">
+          {news.map((n) => (
+            <li class="news-item">
+              <time class="news-date" datetime={n.date}>{n.date}</time>
+              <p>{n.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</BaseLayout>

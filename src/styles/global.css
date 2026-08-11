@@ -1,0 +1,1020 @@
+/* ==========================================================================
+   Academic portfolio — modern-minimal theme
+   Design tokens, base styles, and shared component styles.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens (light is the default)
+   -------------------------------------------------------------------------- */
+:root {
+  /* palette */
+  --bg: #fbfbfa;
+  --bg-soft: #f3f2f0;
+  --surface: #ffffff;
+  --text: #1c1c1f;
+  --text-muted: #565961;
+  --text-faint: #6d7078;
+  --border: #e6e5e2;
+  --accent: #3f46e0;
+  --accent-strong: #3439c4;
+  --accent-soft: rgba(63, 70, 224, 0.08);
+  --on-accent: #ffffff;
+  --link: #3f46e0;
+  --link-hover: #3439c4;
+  --code-bg: #f1f0ec;
+  --focus-ring: #3439c4;
+  --shadow-sm: 0 1px 2px rgba(20, 20, 24, 0.05);
+  --shadow-md: 0 1px 2px rgba(20, 20, 24, 0.04), 0 6px 20px rgba(20, 20, 24, 0.06);
+
+  /* type */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* layout */
+  --container: 46rem;
+  --gutter: clamp(1.25rem, 5vw, 2rem);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --leading: 1.65;
+}
+
+/* --------------------------------------------------------------------------
+   2. Dark theme
+   Stamped as `data-theme="dark"` by the layout's inline script, with a
+   `prefers-color-scheme` fallback so the site still goes dark if JS is off.
+   -------------------------------------------------------------------------- */
+:root[data-theme='dark'] {
+  --bg: #0f1012;
+  --bg-soft: #16171b;
+  --surface: #17181d;
+  --text: #e9e9ec;
+  --text-muted: #a2a5ae;
+  --text-faint: #878b97;
+  --border: #292b31;
+  --accent: #9aa1f6;
+  --accent-strong: #b6bafc;
+  --accent-soft: rgba(154, 161, 246, 0.12);
+  --on-accent: #12141d;
+  --link: #aab0ff;
+  --link-hover: #c2c6ff;
+  --code-bg: #1c1e24;
+  --focus-ring: #c2c6ff;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0f1012;
+    --bg-soft: #16171b;
+    --surface: #17181d;
+    --text: #e9e9ec;
+    --text-muted: #a2a5ae;
+    --text-faint: #878b97;
+    --border: #292b31;
+    --accent: #9aa1f6;
+    --accent-strong: #b6bafc;
+    --accent-soft: rgba(154, 161, 246, 0.12);
+    --on-accent: #12141d;
+    --link: #aab0ff;
+    --link-hover: #c2c6ff;
+    --code-bg: #1c1e24;
+    --focus-ring: #c2c6ff;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.28);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Keep in-page anchors (skip link, #year-*) clear of the sticky header. */
+  scroll-padding-top: calc(3.75rem + 1rem);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: var(--leading);
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  color: var(--link-hover);
+  text-decoration-thickness: 2px;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+code {
+  background: var(--code-bg);
+  border-radius: var(--radius-sm);
+  padding: 0.12em 0.35em;
+}
+
+/* Skip link — first tabbable element, revealed on focus */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 0 0 var(--radius-sm) 0;
+  z-index: 100;
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0;
+  color: var(--on-accent);
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout primitives
+   -------------------------------------------------------------------------- */
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. Header & navigation
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 84%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+}
+
+.site-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+}
+.site-name:hover {
+  color: var(--text);
+}
+.site-name-mark {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+
+.site-nav ul {
+  display: flex;
+  gap: 1.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.25rem 0;
+  position: relative;
+}
+.nav-link:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-link.active {
+  color: var(--text);
+}
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover {
+  color: var(--text);
+  background: var(--bg-soft);
+  border-color: var(--text-faint);
+}
+.theme-toggle svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+.theme-toggle .icon-sun {
+  display: none;
+}
+.theme-toggle .icon-moon {
+  display: block;
+}
+:root[data-theme='dark'] .theme-toggle .icon-sun {
+  display: block;
+}
+:root[data-theme='dark'] .theme-toggle .icon-moon {
+  display: none;
+}
+
+/* JS-off fallback: match the palette's media query so the icon reflects the
+   actual (system-selected) theme when data-theme was never stamped. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-toggle .icon-sun {
+    display: block;
+  }
+  :root:not([data-theme='light']) .theme-toggle .icon-moon {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 6rem;
+  }
+  .header-inner {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+    padding-block: 0.5rem;
+  }
+  .site-nav {
+    order: 3;
+    width: 100%;
+  }
+  .site-nav ul {
+    justify-content: space-between;
+    gap: 0.25rem;
+  }
+  .nav-link {
+    font-size: 0.88rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn-primary:hover {
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  text-decoration: none;
+}
+.btn-secondary {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+}
+.btn-secondary:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Sections & page scaffolding
+   -------------------------------------------------------------------------- */
+.page-head {
+  padding-block: clamp(2.5rem, 6vw, 4rem) 1.5rem;
+}
+.page-head h1 {
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+}
+.page-head p {
+  color: var(--text-muted);
+  max-width: 60ch;
+  margin-top: 0.6rem;
+}
+
+.section {
+  padding-block: 3.5rem;
+  border-top: 1px solid var(--border);
+}
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+.section-head h2 {
+  font-size: 1.5rem;
+}
+.section-link {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Hero (home page) */
+.hero {
+  padding-block: clamp(3.5rem, 10vw, 6rem) 2.5rem;
+}
+.hero-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 3rem);
+  flex-wrap: wrap;
+}
+.hero-text {
+  flex: 1 1 24rem;
+  min-width: 0;
+}
+.hero-portrait {
+  width: clamp(140px, 22vw, 220px);
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  flex: 0 0 auto;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  margin-block: 0.75rem 1rem;
+}
+.hero .tagline {
+  font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+  color: var(--text-muted);
+  max-width: 34ch;
+  line-height: 1.4;
+}
+.hero .affiliation {
+  color: var(--text-faint);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   8. Cards & lists
+   -------------------------------------------------------------------------- */
+.chip-row {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+.chip {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+/* Sub-page body (below the .page-head title block) */
+.page-body {
+  padding-block: 1rem 3.5rem;
+}
+.page-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* News list (home page) */
+.news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+.news-item {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+.news-item p {
+  color: var(--text-muted);
+}
+.news-date {
+  color: var(--text-faint);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.contact-email {
+  color: var(--link);
+  font-weight: 600;
+}
+.contact-email:hover {
+  color: var(--link-hover);
+}
+
+/* --------------------------------------------------------------------------
+   9. Publication entries
+   -------------------------------------------------------------------------- */
+.pub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pub {
+  border-bottom: 1px solid var(--border);
+  padding-block: 1.4rem;
+}
+.pub:last-child {
+  border-bottom: none;
+}
+.pub-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.pub-type {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.pub-year {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.pub-title {
+  font-size: 1.1rem;
+}
+.pub-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.pub-title a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pub-authors {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+.pub-authors .self {
+  color: var(--text);
+  font-weight: 600;
+}
+.pub-venue {
+  font-size: 0.9rem;
+  color: var(--text-faint);
+  margin-top: 0.2rem;
+  font-style: italic;
+}
+.pub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.pub-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--link);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+.pub-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+details.abstract {
+  margin-top: 0.8rem;
+}
+details.abstract summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+details.abstract summary:hover {
+  color: var(--text);
+}
+details.abstract p {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+.year-heading {
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--text-muted);
+  margin-top: 1.6rem;
+  padding-top: 1.4rem;
+  border-top: 1px dashed var(--border);
+}
+.year-group:first-of-type .year-heading {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. Research entries
+   -------------------------------------------------------------------------- */
+.research-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.research-item {
+  border-bottom: 1px solid var(--border);
+  padding-block: 1.5rem;
+}
+.research-item:last-child {
+  border-bottom: none;
+}
+.research-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.research-title {
+  font-size: 1.15rem;
+}
+.research-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+.status {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+.status-active {
+  color: #11613d;
+  background: rgba(26, 127, 75, 0.12);
+}
+.status-completed {
+  color: var(--text-muted);
+  background: var(--bg-soft);
+}
+.status-planned {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+:root[data-theme='dark'] .status-active {
+  color: #57d492;
+}
+.research-body {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+.research-body p + p {
+  margin-top: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. CV
+   -------------------------------------------------------------------------- */
+.cv-section {
+  margin-top: 2.5rem;
+}
+.cv-section h2 {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.cv-entry {
+  margin-bottom: 1.15rem;
+}
+.cv-entry:last-child {
+  margin-bottom: 0;
+}
+.cv-entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+.cv-entry-title {
+  font-weight: 650;
+}
+.cv-entry-where {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.cv-entry-date {
+  color: var(--text-faint);
+  font-size: 0.88rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.cv-entry-detail {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  max-width: 60ch;
+}
+.skills-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+}
+.skill {
+  font-size: 0.88rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   12. Contact
+   -------------------------------------------------------------------------- */
+.contact-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.contact-card h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.9rem;
+}
+.contact-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+.contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.contact-list a {
+  color: var(--text);
+  text-decoration: none;
+}
+.contact-list a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.contact-list svg {
+  color: var(--accent);
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+.contact-note {
+  margin-top: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  max-width: 60ch;
+}
+
+/* Empty-state message for content collections with no entries yet */
+.empty-state {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Footer
+   -------------------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding-block: 2rem;
+  margin-top: 4rem;
+}
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.footer-meta {
+  color: var(--text-faint);
+  font-size: 0.88rem;
+}
+.footer-social {
+  list-style: none;
+  display: flex;
+  gap: 1.1rem;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.footer-social a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.footer-social a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+.footer-note {
+  color: var(--text-faint);
+  font-size: 0.8rem;
+  margin-top: 0.6rem;
+}
+
+/* --------------------------------------------------------------------------
+   14. Motion & reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. Print styles (CV → PDF from the browser)
+   Strips chrome, sets sensible margins, and uses dark text on white.
+   Triggered by the "Print" button on /cv (window.print()) and Cmd-P.
+   -------------------------------------------------------------------------- */
+@media print {
+  :root,
+  :root[data-theme='dark'] {
+    --bg: #ffffff;
+    --bg-soft: #ffffff;
+    --surface: #ffffff;
+    --text: #000000;
+    --text-muted: #222222;
+    --text-faint: #555555;
+    --border: #d0d0d0;
+    --accent: #000000;
+    --link: #000000;
+    --shadow-sm: none;
+    --shadow-md: none;
+  }
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .theme-toggle,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  .page-head,
+  .page-body,
+  .cv-section {
+    padding-block: 0.5rem;
+  }
+  .cv-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  /* Show URLs after links for the printed PDF */
+  .cv-entry-title a[href^='http']::after,
+  .pub-title a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    color: var(--text-muted);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. Project list (/projects)
+   -------------------------------------------------------------------------- */
+.project-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+.project-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.4rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.project-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+.project-title {
+  font-size: 1.15rem;
+  margin: 0;
+  font-weight: 600;
+}
+.project-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.project-tagline {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 0.6rem;
+}
+.project-summary {
+  margin: 0 0 0.9rem;
+  line-height: var(--leading);
+}
+.project-links {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+}
+.project-role {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  margin-left: auto;
+}

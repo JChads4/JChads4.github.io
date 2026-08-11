@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ResearchCard from '../components/ResearchCard.astro';
+import { getCollection } from 'astro:content';
+
+const researchItems = (await getCollection('research')).sort(
+  (a, b) => (b.data.since ?? 0) - (a.data.since ?? 0)
+);
+---
+
+<BaseLayout
+  title="Research"
+  description="Research areas and ongoing projects."
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Research</h1>
+      <p>
+        Current and recent research threads, and the questions driving them.
+        Most threads lead into the publications listed on the{" "}
+        <a href="/publications/">publications page</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {researchItems.length === 0 ? (
+        <p class="empty-state">No research areas yet.</p>
+      ) : (
+        <ul class="research-list">
+          {researchItems.map((item) => (
+            <ResearchCard item={item} headingLevel={2} />
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>
