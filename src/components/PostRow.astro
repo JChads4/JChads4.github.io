@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MathText from './MathText.astro';
+import { postHref, tagHref, tagSlug } from '../lib/blog';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  /** Heading level for the title. 3 by default, since a row sits under its
+   *  group label. Pass 2 where there is no intermediate heading. */
+  headingLevel?: 2 | 3;
+}
+
+const { post, headingLevel = 3 } = Astro.props;
+const Title = headingLevel === 2 ? 'h2' : 'h3';
+const { title, date, excerpt, tags } = post.data;
+---
+
+<!--
+  One row of the dense index. The date is printed as stored (`YYYY-MM-DD`): it
+  is already the normalised form, so a fixed-width column aligns without a
+  formatting helper, and `tabular-nums` keeps it aligned across the breakpoint.
+  The long form is still used on the post's own page.
+-->
+<li class="index-row">
+  <time class="index-date col-1" datetime={date}>{date}</time>
+
+  <div class="col-2">
+    <Title class="index-title">
+      <a href={postHref(post)}><MathText text={title} /></a>
+    </Title>
+    {
+      excerpt && (
+        <p class="index-excerpt">
+          <MathText text={excerpt} />
+        </p>
+      )
+    }
+  </div>
+
+  {
+    tags.length > 0 && (
+      <ul class="index-tags col-3" aria-label="Tags">
+        {tags.map((tag) => (
+          <li>
+            <a class="tag" href={tagHref(tagSlug(tag))}>
+              {tag}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</li>

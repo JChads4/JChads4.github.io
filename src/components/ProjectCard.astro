@@ -13,36 +13,36 @@ const { title, tagline, summary, repoUrl, paperUrl, status, role, keywords } =
   project;
 ---
 
-<li class="project-item">
-  <div class="project-head">
-    <Title class="project-title"><MathText text={title} /></Title>
-    {status && <span class="project-status">{status}</span>}
+<li class="index-row">
+  <div class="col-1">
+    {status && (
+      <span class="status status-note project-status">{status}</span>
+    )}
   </div>
 
-  {tagline && (
-    <p class="project-tagline">
-      <MathText text={tagline} />
-    </p>
-  )}
-  <p class="project-summary"><MathText text={summary} /></p>
+  <div class="col-2">
+    <Title class="project-title"><MathText text={title} /></Title>
 
-  {keywords.length > 0 && (
-    <ul class="chip-row" aria-label="Keywords">
-      {keywords.map((k) => (
-        <li class="chip">
-          <MathText text={k} />
-        </li>
-      ))}
-    </ul>
-  )}
+    {tagline && (
+      <p class="project-tagline">
+        <MathText text={tagline} />
+      </p>
+    )}
+    <p class="project-summary"><MathText text={summary} /></p>
 
-  <div class="project-links">
-    <a
-      class="pub-link"
-      href={repoUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    {keywords.length > 0 && (
+      <ul class="chip-row" aria-label="Keywords">
+        {keywords.map((k) => (
+          <li class="chip">
+            <MathText text={k} />
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <div class="project-links col-3">
+    <a class="pub-link" href={repoUrl} target="_blank" rel="noopener noreferrer">
       GitHub
     </a>
     {paperUrl && (

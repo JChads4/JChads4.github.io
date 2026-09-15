@@ -1,27 +1,29 @@
 ---
-import { site, activeSocials } from '../config';
+import { site } from '../config';
+import { navGroups } from '../lib/nav';
 
 const year = new Date().getFullYear();
+
+// The site map in one dense row, derived from the same map the rail uses so the
+// two cannot drift. Repeating it here is the catalogue convention: the footer
+// is where a reader who has scrolled to the bottom looks for the next page.
+const links = navGroups().flatMap((group) => group.links);
 ---
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-row">
-      <p class="footer-meta">© {year} {site.name}</p>
-      {activeSocials.length > 0 && (
-        <ul class="footer-social">
-          {activeSocials.map((s) => (
+      <ul class="footer-links">
+        {
+          links.map((link) => (
             <li>
-              <a href={s.url} target="_blank" rel="noopener noreferrer">
-                {s.label}
-              </a>
+              <a href={link.href}>{link.label}</a>
             </li>
-          ))}
-        </ul>
-      )}
+          ))
+        }
+      </ul>
+      <p class="footer-meta">© {year} {site.name}</p>
     </div>
-    <p class="footer-note">
-      {site.role} · {site.affiliation}
-    </p>
+    <p class="footer-note">{site.role} · {site.affiliation}</p>
   </div>
 </footer>

@@ -1,0 +1,38 @@
+---
+import type { Talk } from '../data/talks';
+import MathText from './MathText.astro';
+
+interface Props {
+  talk: Talk;
+}
+
+const { talk } = Astro.props;
+// Every entry seeded from the CV has no title, by design: the CV never recorded
+// one. Where there is none the venue carries the row on its own.
+const label = talk.title ?? talk.venue;
+---
+
+<li class="index-row">
+  <time class="index-date col-1" datetime={talk.date}>{talk.date}</time>
+
+  <div class="col-2">
+    <h3 class="index-title">
+      {
+        talk.url ? (
+          <a href={talk.url}>
+            <MathText text={label} />
+          </a>
+        ) : (
+          <MathText text={label} />
+        )
+      }
+    </h3>
+    {
+      talk.title && (
+        <p class="index-excerpt">
+          <MathText text={talk.venue} />
+        </p>
+      )
+    }
+  </div>
+</li>

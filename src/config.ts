@@ -6,11 +6,19 @@
  */
 
 export const site = {
-  /** Full name, used in the header, footer, and page titles. */
+  /** Full name, used in the masthead, footer, and page titles. */
   name: 'Jamie Chadderton',
-  /** One-line research summary (banner tagline + meta description). */
+  /** One-line research summary (meta description + the masthead on record pages). */
   title:
     'Experimental nuclear physics — heavy and superheavy element spectroscopy',
+  /**
+   * One-line description of the blog, shown after the site name on the blog
+   * routes and in the home page's identity strip. Kept separate from `title`
+   * because the two are genuinely different subjects: the blog is machine
+   * learning and PINNs, the record is nuclear physics.
+   */
+  blogSubject:
+    'Notes on machine learning and physics-informed neural networks',
   /** Current academic role. */
   role: 'Postdoctoral Researcher',
   /** Department and university. */
@@ -22,13 +30,8 @@ export const site = {
     'Academic portfolio of Jamie Chadderton, PhD — experimental nuclear physics research, publications, and CV.',
   /** Deployed URL — keep in sync with astro.config.mjs `site`. */
   url: 'https://JChads4.github.io',
-  /** Path to a portrait shown beside the home-page summary (lives in /public). */
+  /** Path to a portrait shown on the contact page (lives in /public). */
   profileImage: '/images/profile.jpg',
-  /**
-   * Full-bleed banner image behind the site title, on every page (lives in
-   * /public). Around 1600x960 works well. Empty = a plain dark banner.
-   */
-  bannerImage: '',
   /** Optional link to a PDF of your CV (place the file in public/). Empty = hidden. */
   cvPdf: '',
 } as const;

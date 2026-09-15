@@ -5,6 +5,11 @@ import { cv } from '../data/cv';
 import { site } from '../config';
 
 const { summary, sections, skills } = cv;
+
+// A section with no entries would otherwise render a heading with nothing under
+// it, which is a visible wart at this row height. (`Service & peer review` is
+// empty today.)
+const filled = sections.filter((section) => section.entries.length > 0);
 ---
 
 <BaseLayout
@@ -15,7 +20,7 @@ const { summary, sections, skills } = cv;
     <div class="container">
       <div class="page-head-row">
         <h1>Curriculum Vitae</h1>
-        <div class="no-print" style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <div class="print-actions no-print">
           {site.cvPdf && (
             <a class="btn btn-secondary" href={site.cvPdf}>Download PDF</a>
           )}
@@ -34,9 +39,16 @@ const { summary, sections, skills } = cv;
 
   <section class="page-body">
     <div class="container">
-      {sections.map((section) => (
+      {filled.map((section) => (
         <div class="cv-section">
           <h2>{section.title}</h2>
+          {/* The CV's own presentation rows are coarser than talks.ts, which
+              holds one row per talk. Point across rather than duplicating. */}
+          {section.title === 'Selected presentations' && (
+            <p class="cv-entry-detail">
+              <a href="/news/">Every talk, one row each →</a>
+            </p>
+          )}
           {section.entries.map((entry) => (
             <div class="cv-entry">
               <div class="cv-entry-head">
@@ -47,7 +59,7 @@ const { summary, sections, skills } = cv;
                   {entry.where && (
                     <span class="cv-entry-where">
                       {' '}
-                      — <MathText text={entry.where} />
+                      · <MathText text={entry.where} />
                     </span>
                   )}
                 </div>

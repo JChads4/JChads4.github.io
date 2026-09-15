@@ -4,7 +4,8 @@ import type { CollectionEntry } from 'astro:content';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MathText from '../../components/MathText.astro';
-import { formatPostDate, visiblePosts } from '../../lib/blog';
+import { formatPostDate, tagHref, tagSlug, visiblePosts } from '../../lib/blog';
+import { site } from '../../config';
 
 // Drafts are excluded here as well as on the listing: a draft must not get a
 // page of its own, or an entry in the sitemap.
@@ -18,20 +19,33 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, date, excerpt, image } = post.data;
+const { title, date, excerpt, image, tags } = post.data;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={title} description={excerpt}>
+<BaseLayout title={title} description={excerpt} subject={site.blogSubject}>
   <article class="post">
-    <!-- Not .page-head: that renders its h1 as the small uppercase label, which
-         is wrong for a post title. A bare h1 picks up the display scale. -->
+    <!-- Not .page-head: that renders its h1 as a page label, which is wrong for
+         a post title. A post is the one thing here meant to be read. -->
     <header class="post-header">
       <div class="container">
         <h1><MathText text={title} /></h1>
-        <time class="news-date post-date" datetime={date}>
-          {formatPostDate(date)}
-        </time>
+        <div class="post-meta">
+          <time datetime={date}>{formatPostDate(date)}</time>
+          {
+            tags.length > 0 && (
+              <ul class="index-tags" aria-label="Tags">
+                {tags.map((tag) => (
+                  <li>
+                    <a class="tag" href={tagHref(tagSlug(tag))}>
+                      {tag}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
       </div>
     </header>
 

@@ -2,7 +2,7 @@
 title: "A place to write things down"
 date: 2026-09-14
 excerpt: "I spent years on experimental nuclear physics. This is where I write up the move into machine learning and physics-informed neural networks."
-tags: ["meta"]
+tags: ["Meta"]
 ---
 
 I spent years doing experimental nuclear physics, largely on the spectroscopy of

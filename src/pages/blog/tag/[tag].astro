@@ -1,0 +1,72 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import IndexLabels from '../../../components/IndexLabels.astro';
+import PostRow from '../../../components/PostRow.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../../../config';
+import { allTags, postsWithTag, tagSlug, visiblePosts } from '../../../lib/blog';
+
+// Drafts are excluded here as well as on the listing: a tag carried only by a
+// draft would otherwise generate a page that is empty in production.
+export const getStaticPaths = (async () => {
+  const posts = visiblePosts(await getCollection('blog'));
+  return allTags(posts).map((t) => ({
+    params: { tag: t.slug },
+    props: { tag: t.tag, posts: postsWithTag(posts, t.slug) },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  tag: string;
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { tag, posts } = Astro.props;
+const others = allTags(visiblePosts(await getCollection('blog'))).filter(
+  (t) => t.slug !== tagSlug(tag)
+);
+---
+
+<BaseLayout
+  title={`Posts tagged ${tag}`}
+  subject={site.blogSubject}
+  description={`Blog posts tagged ${tag}.`}
+  noindex
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>{tag}</h1>
+      <p>
+        {posts.length} {posts.length === 1 ? 'post' : 'posts'} tagged{' '}
+        <strong>{tag}</strong>. <a href="/blog/">All posts</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <div class="index-block">
+        <IndexLabels labels={['Date', 'Post', 'Topics']} />
+        <ul class="index">
+          {posts.map((post) => <PostRow post={post} headingLevel={2} />)}
+        </ul>
+      </div>
+
+      {
+        others.length > 0 && (
+          <ul class="chip-row" aria-label="Other topics">
+            {others.map((t) => (
+              <li>
+                <a class="tag" href={`/blog/tag/${t.slug}/`}>
+                  {t.tag} ({t.count})
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

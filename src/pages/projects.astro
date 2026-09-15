@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import IndexLabels from '../components/IndexLabels.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { projects } from '../data/projects';
 ---
@@ -21,9 +22,12 @@ import { projects } from '../data/projects';
 
   <section class="page-body">
     <div class="container">
-      <ul class="project-list">
-        {projects.map((p) => <ProjectCard project={p} />)}
-      </ul>
+      <div class="index-block index-block--project">
+        <IndexLabels labels={['Status', 'Project', 'Links']} />
+        <ul class="index">
+          {projects.map((p) => <ProjectCard project={p} />)}
+        </ul>
+      </div>
     </div>
   </section>
 </BaseLayout>

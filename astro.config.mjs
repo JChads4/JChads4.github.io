@@ -9,7 +9,14 @@ import { katexDisplay, katexInline } from './src/lib/katex-math.mjs';
 // value lives in src/config.ts (`site.url`) — keep them in sync.
 export default defineConfig({
   site: 'https://JChads4.github.io',
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // Tag pages are real navigation targets (the rail links to them) but each
+      // carries one post while the blog is small, so they are kept out of the
+      // index and out of the sitemap. Revisit once a tag has a few posts.
+      filter: (page) => !page.includes('/blog/tag/'),
+    }),
+  ],
   compressHTML: true,
   build: {
     format: 'directory',

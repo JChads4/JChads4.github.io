@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { navGroups } from '../lib/nav';
+
+// Built from the same map the rail uses, so the 404 is a useful index rather
+// than a dead end, and cannot drift from the navigation.
+const links = navGroups().flatMap((group) => group.links);
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page does not exist."
+  noindex
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Page not found</h1>
+      <p>
+        There is nothing at this address. It may have been renamed, or the link
+        that brought you here may be wrong.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <div class="index-block index-block--links">
+        <ul class="index">
+          {
+            links.map((link) => (
+              <li class="index-row">
+                <a class="index-title col-1" href={link.href}>
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

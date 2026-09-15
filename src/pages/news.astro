@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IndexLabels from '../components/IndexLabels.astro';
+import MathText from '../components/MathText.astro';
+import TalkRow from '../components/TalkRow.astro';
+import { news } from '../data/news';
+import { talks } from '../data/talks';
+
+// News and talks have no route of their own since the home page became a post
+// index, and both are short dated lists of the same shape. All seven talks are
+// here, including the contributed ones that no page previously reached.
+const invited = talks
+  .filter((t) => t.kind === 'invited')
+  .sort((a, b) => b.year - a.year || a.venue.localeCompare(b.venue));
+const contributed = talks
+  .filter((t) => t.kind === 'contributed')
+  .sort((a, b) => b.year - a.year || a.venue.localeCompare(b.venue));
+---
+
+<BaseLayout
+  title="News & talks"
+  description="Dated updates, invited seminars, and conference talks."
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>News &amp; talks</h1>
+      <p>
+        Short dated updates, then every invited seminar and contributed talk.
+        The CV keeps its own coarser summary of presentations; this is the
+        per-talk record.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {
+        news.length > 0 && (
+          <div class="index-block index-block--news">
+            <IndexLabels labels={['Date', 'Update']} />
+            <ul class="index">
+              {news.map((n) => (
+                <li class="index-row">
+                  <time class="index-date col-1" datetime={n.date}>
+                    {n.date}
+                  </time>
+                  <p class="col-2">
+                    <MathText text={n.text} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <h2 class="year-heading">Invited</h2>
+      <div class="index-block index-block--talk">
+        <IndexLabels labels={['Date', 'Talk']} />
+        <ul class="index">
+          {invited.map((talk) => <TalkRow talk={talk} />)}
+        </ul>
+      </div>
+
+      <h2 class="year-heading">Contributed</h2>
+      <div class="index-block index-block--talk">
+        <IndexLabels labels={['Date', 'Talk']} />
+        <ul class="index">
+          {contributed.map((talk) => <TalkRow talk={talk} />)}
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

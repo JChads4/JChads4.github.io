@@ -1,0 +1,17 @@
+---
+interface Props {
+  /** One label per column of the parent `.index-block`. */
+  labels: string[];
+}
+
+const { labels } = Astro.props;
+---
+
+<!--
+  The column-label header, sharing its grid with the rows below it so the labels
+  sit over their own columns. Hidden from assistive tech: it is visual
+  orientation only, and the rows are self-describing without it.
+-->
+<p class="index-labels" aria-hidden="true">
+  {labels.map((label) => <span>{label}</span>)}
+</p>
