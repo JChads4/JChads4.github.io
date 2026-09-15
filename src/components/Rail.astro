@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import { allTags, tagHref, visiblePosts } from '../lib/blog';
+import { isAncestor, isCurrent, navGroups } from '../lib/nav';
+
+// The rail computes its own categories, so no page has to pass them in. Reading
+// `visiblePosts` rather than the raw collection matters: a tag carried only by a
+// draft would otherwise get a link to a page that is empty in production.
+const tags = allTags(visiblePosts(await getCollection('blog'))).map((t) => ({
+  href: tagHref(t.slug),
+  label: `${t.tag} (${t.count})`,
+}));
+
+const groups = navGroups(tags);
+const path = Astro.url.pathname;
+---
+
+<!--
+  The rail, in both its shapes: a wrapped link strip where there is no room for
+  a column, and a sticky vertical rail above 60em. One markup tree, no
+  disclosure widget, so nothing is hidden behind a control that needs
+  JavaScript to open.
+-->
+<aside class="rail">
+  <nav class="rail-nav" aria-label="Site">
+    {
+      groups.map((group) => (
+        <div class="rail-group">
+          <h2 class="rail-label">{group.label}</h2>
+          <ul class="rail-list">
+            {group.links.map((link) => {
+              const current = isCurrent(path, link.href);
+              const below = isAncestor(path, link.href);
+              return (
+                <li>
+                  <a
+                    href={link.href}
+                    class:list={['rail-link', { active: below }]}
+                    aria-current={current ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))
+    }
+  </nav>
+</aside>

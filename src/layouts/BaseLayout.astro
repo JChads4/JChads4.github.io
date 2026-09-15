@@ -1,18 +1,33 @@
 ---
-import Nav from '../components/Nav.astro';
+import Masthead from '../components/Masthead.astro';
+import Rail from '../components/Rail.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 // KaTeX's own stylesheet, bundled by Vite so the maths fonts are self-hosted
-// rather than fetched from a CDN at runtime.
+// rather than fetched from a CDN at runtime. Its import order matters: it must
+// come after global.css, or global's `code`/`pre`/`a` rules start winning ties
+// against KaTeX's glyph rules.
 import 'katex/dist/katex.min.css';
 import { site } from '../config';
 
 interface Props {
   title?: string;
   description?: string;
+  /** The masthead's second line. Defaults to the research tagline; the blog
+   *  routes pass `site.blogSubject` instead, since the two are different
+   *  subjects. */
+  subject?: string;
+  /** Keep the page out of search indexes. For the tag pages, which carry one
+   *  post each while the blog is small, and for the 404. */
+  noindex?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  subject,
+  noindex = false,
+} = Astro.props;
 const pageTitle = title
   ? `${title} — ${site.name}`
   : `${site.name} — ${site.title}`;
@@ -21,8 +36,8 @@ const pageTitle = title
 const SITE_URL = Astro.site ?? new URL(site.url);
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
 
-// The home page carries the full-height banner; inner pages get a shorter one
-// so a long page like the CV is not buried under a photograph.
+// On the home page the masthead name is the page's own h1; everywhere else it
+// is a link home and the page supplies its own h1.
 const isHome = Astro.url.pathname === '/';
 ---
 
@@ -34,12 +49,13 @@ const isHome = Astro.url.pathname === '/';
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Libre Franklin, the face Twenty Seventeen ships. Weights map to:
-         300 headings-light, 400 body, 600 nav, 800 site title, 400 italic. -->
+    <!-- Libre Franklin, at 300/400/600/800. Nothing in the stylesheet asks for
+         500 or 700, because those would be synthesised rather than loaded. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -57,32 +73,17 @@ const isHome = Astro.url.pathname === '/';
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <!--
-      The banner, in the same order as Twenty Seventeen: image, then the site
-      title over it, then the nav bar as a sibling below. The image is hidden
-      from assistive tech because it is decoration; the title carries it.
-      With no `bannerImage` set, the header's dark background shows instead.
-    -->
-    <header class:list={['site-header', { 'site-header--short': !isHome }]}>
-      <div class="custom-header-media">
-        {site.bannerImage && <img src={site.bannerImage} alt="" aria-hidden="true" />}
-      </div>
-      <div class="site-branding">
-        {
-          isHome ? (
-            <h1 class="site-title">{site.name}</h1>
-          ) : (
-            <p class="site-title">{site.name}</p>
-          )
-        }
-        <p class="site-description">{site.title}</p>
-      </div>
-    </header>
+    <Masthead subject={subject} isHome={isHome} />
 
-    <Nav />
-    <main id="main">
-      <slot />
-    </main>
+    <!-- Rail first in the DOM, so the keyboard order matches the visual order.
+         The skip link above lets a keyboard user bypass the whole thing. -->
+    <div class="container layout">
+      <Rail />
+      <main id="main" class="content">
+        <slot />
+      </main>
+    </div>
+
     <Footer />
   </body>
 </html>

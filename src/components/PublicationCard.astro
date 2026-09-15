@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { pub, showAbstract = false } = Astro.props;
-const { title, authors, venue, year, type, doi, arxiv, pdf, abstract, keywords } =
+const { title, authors, venue, type, doi, arxiv, pdf, abstract, keywords } =
   pub.data;
 
 const typeLabel: Record<string, string> = {
@@ -45,66 +45,64 @@ const links = [
 const titleUrl = pdf ?? arxivUrl ?? doiUrl;
 ---
 
-<li class="pub">
-  <div class="pub-head">
+<li class="index-row">
+  <div class="col-1">
     <span class="pub-type">{typeLabel[type] ?? type}</span>
-    <time class="pub-year">{year}</time>
   </div>
 
-  <h3 class="pub-title">
-    {titleUrl ? (
-      <a href={titleUrl} target="_blank" rel="noopener noreferrer">
-        <MathText text={title} />
-      </a>
-    ) : (
-      <MathText text={title} />
-    )}
-  </h3>
-
-  <p class="pub-authors">
-    {authors.map((author, i) => (
-      <>
-        {i > 0 && ', '}
-        {selfAuthorNames.includes(author) ? (
-          <span class="self">{author}</span>
-        ) : (
-          author
-        )}
-      </>
-    ))}
-  </p>
-
-  <p class="pub-venue">{venue}</p>
-
-  {keywords.length > 0 && (
-    <ul class="chip-row" aria-label="Keywords">
-      {keywords.map((k) => (
-        <li class="chip">
-          <MathText text={k} />
-        </li>
-      ))}
-    </ul>
-  )}
-
-  {links.length > 0 && (
-    <div class="pub-links">
-      {links.map((l) => (
-        <a
-          class="pub-link"
-          href={l.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {l.label}
+  <div class="col-2">
+    <h3 class="pub-title">
+      {titleUrl ? (
+        <a href={titleUrl} target="_blank" rel="noopener noreferrer">
+          <MathText text={title} />
         </a>
-      ))}
-    </div>
-  )}
+      ) : (
+        <MathText text={title} />
+      )}
+    </h3>
 
-  {showAbstract && abstract && (
-    <details class="abstract">
-      <summary>Abstract</summary>
-      <p><MathText text={abstract} /></p>
-    </details>
-  )}
+    <p class="pub-authors">
+      {authors.map((author, i) => (
+        <>
+          {i > 0 && ', '}
+          {selfAuthorNames.includes(author) ? (
+            <span class="self">{author}</span>
+          ) : (
+            author
+          )}
+        </>
+      ))}
+    </p>
+
+    <p class="pub-venue">{venue}</p>
+
+    {keywords.length > 0 && (
+      <ul class="chip-row" aria-label="Keywords">
+        {keywords.map((k) => (
+          <li class="chip">
+            <MathText text={k} />
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {showAbstract && abstract && (
+      <details class="abstract">
+        <summary>Abstract</summary>
+        <p><MathText text={abstract} /></p>
+      </details>
+    )}
+  </div>
+
+  {
+    links.length > 0 && (
+      <div class="pub-links col-3">
+        {links.map((l) => (
+          <a class="pub-link" href={l.url} target="_blank" rel="noopener noreferrer">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    )
+  }
 </li>

@@ -1,0 +1,56 @@
+---
+import { site, activeSocials } from '../config';
+
+interface Props {
+  /** The line under the site name: what this particular page is about. */
+  subject?: string;
+  /** On the home page the name is the page's own h1 rather than a link home. */
+  isHome?: boolean;
+}
+
+const { subject = site.title, isHome = false } = Astro.props;
+---
+
+<!--
+  A compact two-row masthead in place of a banner: the name and what the page
+  is about, then the utility links. The wrapper is a `div`, not a `p`: an `h1`
+  inside a `p` makes the HTML parser close the paragraph and hoist the heading
+  out of it.
+-->
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div class="masthead-brand">
+      {
+        isHome ? (
+          <h1 class="masthead-name">{site.name}</h1>
+        ) : (
+          <span class="masthead-name">
+            <a href="/">{site.name}</a>
+          </span>
+        )
+      }
+      <span class="masthead-subject">{subject}</span>
+    </div>
+
+      {
+        activeSocials.length > 0 && (
+          <ul class="masthead-utility">
+            {activeSocials.map((s) => (
+              <li>
+                {/* A mailto: link wants no target, or the browser opens a
+                    blank tab beside the mail client. */}
+                <a
+                  href={s.url}
+                  {...(s.url.startsWith('http')
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {})}
+                >
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+  </div>
+</header>

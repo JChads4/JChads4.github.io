@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import IndexLabels from '../components/IndexLabels.astro';
 import PublicationCard from '../components/PublicationCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -40,13 +41,16 @@ const years = [...new Set(pubs.map((p) => p.data.year))].sort(
         years.map((year) => (
           <div class="year-group">
             <h2 class="year-heading" id={`year-${year}`}>{year}</h2>
-            <ul class="pub-list">
-              {pubs
-                .filter((p) => p.data.year === year)
-                .map((pub) => (
-                  <PublicationCard pub={pub} showAbstract />
-                ))}
-            </ul>
+            <div class="index-block index-block--pub">
+              <IndexLabels labels={['Type', 'Paper', 'Links']} />
+              <ul class="index">
+                {pubs
+                  .filter((p) => p.data.year === year)
+                  .map((pub) => (
+                    <PublicationCard pub={pub} showAbstract />
+                  ))}
+              </ul>
+            </div>
           </div>
         ))
       )}

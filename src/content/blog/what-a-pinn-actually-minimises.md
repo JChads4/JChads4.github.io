@@ -2,7 +2,7 @@
 title: "What a PINN actually minimises"
 date: 2026-09-02
 excerpt: "The loss has two terms, and the second one is not a fit to anything. Understanding what it measures is most of the work."
-tags: ["pinns", "training"]
+tags: ["PINNs", "Training"]
 ---
 
 A physics-informed neural network is often introduced as a network that is

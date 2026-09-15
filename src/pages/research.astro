@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import IndexLabels from '../components/IndexLabels.astro';
 import ResearchCard from '../components/ResearchCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -28,11 +29,14 @@ const researchItems = (await getCollection('research')).sort(
       {researchItems.length === 0 ? (
         <p class="empty-state">No research areas yet.</p>
       ) : (
-        <ul class="research-list">
-          {researchItems.map((item) => (
-            <ResearchCard item={item} headingLevel={2} />
-          ))}
-        </ul>
+        <div class="index-block index-block--research">
+          <IndexLabels labels={['Since', 'Area', 'Status']} />
+          <ul class="index">
+            {researchItems.map((item) => (
+              <ResearchCard item={item} headingLevel={2} />
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   </section>

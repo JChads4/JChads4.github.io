@@ -1,14 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import BlogCard from '../../components/BlogCard.astro';
+import IndexLabels from '../../components/IndexLabels.astro';
+import PostRow from '../../components/PostRow.astro';
 import { getCollection } from 'astro:content';
-import { visiblePosts } from '../../lib/blog';
+import { site } from '../../config';
+import { allTags, postYear, tagHref, visiblePosts } from '../../lib/blog';
 
 const posts = visiblePosts(await getCollection('blog'));
+const tags = allTags(posts);
+
+// Grouped by year, descending. The home page shows a flat recent slice; this is
+// the full record, which is what makes the two pages worth having separately.
+const years = [...new Set(posts.map(postYear))].sort((a, b) => b - a);
 ---
 
 <BaseLayout
   title="Blog"
+  subject={site.blogSubject}
   description="Working notes on machine learning and physics-informed neural networks."
 >
   <section class="page-head">
@@ -17,7 +25,8 @@ const posts = visiblePosts(await getCollection('blog'));
       <p>
         Working notes on machine learning and physics-informed neural networks:
         what the losses actually measure, how training behaves, and small pieces
-        of PyTorch. Written up while the detail is still fresh.
+        of PyTorch. Written up while the detail is still fresh. The most recent
+        posts are on the <a href="/">home page</a>.
       </p>
     </div>
   </section>
@@ -25,14 +34,40 @@ const posts = visiblePosts(await getCollection('blog'));
   <section class="page-body">
     <div class="container">
       {
+        tags.length > 0 && (
+          <ul class="chip-row" aria-label="Topics">
+            {tags.map((t) => (
+              <li>
+                <a class="tag" href={tagHref(t.slug)}>
+                  {t.tag} ({t.count})
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
         posts.length === 0 ? (
           <p class="empty-state">No posts yet.</p>
         ) : (
-          <ul class="post-list">
-            {posts.map((post) => (
-              <BlogCard post={post} headingLevel={2} />
-            ))}
-          </ul>
+          years.map((year) => (
+            <div class="year-group">
+              <h2 class="year-heading" id={`year-${year}`}>
+                {year}
+              </h2>
+              <div class="index-block">
+                <IndexLabels labels={['Date', 'Post', 'Topics']} />
+                <ul class="index">
+                  {posts
+                    .filter((post) => postYear(post) === year)
+                    .map((post) => (
+                      <PostRow post={post} />
+                    ))}
+                </ul>
+              </div>
+            </div>
+          ))
         )
       }
     </div>

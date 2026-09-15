@@ -1,122 +1,91 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, email, activeSocials } from '../config';
+import { cv } from '../data/cv';
+import MathText from '../components/MathText.astro';
 
 const address = `${email.user}@${email.host}`;
+
+// The email is the first row of the list, so the Email entry in `socials` would
+// repeat it. (HTML5 allows `dt`/`dd` groups to be wrapped in a `div`, not an
+// `li`, so the rows below are divs.)
+const profiles = activeSocials.filter((s) => !s.url.startsWith('mailto:'));
+
+// The address is the value in this table, so it shows without the scheme and
+// the `www.`. `linkedin.com/in/...` reads as an address and fits one line at
+// 400px; the full URL reads as a URL and wraps.
+const bare = (url: string) =>
+  url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 ---
 
-<BaseLayout
-  title="Contact"
-  description="How to reach me."
->
+<BaseLayout title="Contact" description="How to reach me.">
   <section class="page-head">
     <div class="container">
       <h1>Contact</h1>
       <p>
-        I'm happy to hear from students, collaborators, and journalists.
-        Email is the fastest way to reach me.
+        I'm happy to hear from students, collaborators, and journalists. Email
+        is the fastest way to reach me.
       </p>
     </div>
   </section>
 
   <section class="page-body">
     <div class="container">
-      <div class="contact-grid">
-        <div class="contact-card">
-          <h2>Email</h2>
-          <ul class="contact-list">
-            <li>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-              <a class="contact-email" href={`mailto:${address}`}>
-                {address}
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="contact-card">
-          <h2>Office</h2>
-          <ul class="contact-list">
-            <li>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 21h18M5 21V7l7-4 7 4v14" />
-                <path d="M9 21v-4h6v4" />
-              </svg>
-              <span>{site.affiliation}</span>
-            </li>
-            <li>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              <span>{site.location}</span>
-            </li>
-          </ul>
-        </div>
-
-        {activeSocials.length > 0 && (
-          <div class="contact-card">
-            <h2>Online</h2>
-            <ul class="contact-list">
-              {activeSocials.map((s) => (
-                <li>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M15 3h6v6" />
-                    <path d="M10 14 21 3" />
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  </svg>
-                  <a
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <div class="contact-intro">
+        {
+          site.profileImage && (
+            <img
+              class="contact-figure"
+              src={site.profileImage}
+              alt={`Portrait of ${site.name}`}
+              width="160"
+              height="213"
+              loading="lazy"
+              decoding="async"
+            />
+          )
+        }
+        <p><MathText text={cv.summary} /></p>
       </div>
+
+      <!--
+        Label/value rows rather than the three icon cards this used to be. The
+        cards carried about 90 lines of hand-written inline SVG to say what the
+        labels now say in a word, and the icons were the only decoration left on
+        the site.
+      -->
+      <dl class="contact-list">
+        <div class="contact-row">
+          <dt class="contact-dt">Email</dt>
+          <dd class="contact-dd">
+            <a class="contact-email" href={`mailto:${address}`}>{address}</a>
+          </dd>
+        </div>
+        <div class="contact-row">
+          <dt class="contact-dt">Affiliation</dt>
+          <dd class="contact-dd">{site.affiliation}</dd>
+        </div>
+        <div class="contact-row">
+          <dt class="contact-dt">Location</dt>
+          <dd class="contact-dd">{site.location}</dd>
+        </div>
+        <div class="contact-row">
+          <dt class="contact-dt">Role</dt>
+          <dd class="contact-dd">{site.role}</dd>
+        </div>
+        {
+          profiles.map((s) => (
+            <div class="contact-row">
+              <dt class="contact-dt">{s.label}</dt>
+              <dd class="contact-dd">
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  {bare(s.url)}
+                </a>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
 
       <p class="contact-note">
         For press or interview requests, please include your deadline and the

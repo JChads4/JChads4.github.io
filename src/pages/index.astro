@@ -1,202 +1,52 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PublicationCard from '../components/PublicationCard.astro';
-import ResearchCard from '../components/ResearchCard.astro';
-import BlogCard from '../components/BlogCard.astro';
-import MathText from '../components/MathText.astro';
+import IndexLabels from '../components/IndexLabels.astro';
+import PostRow from '../components/PostRow.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config';
-import { cv } from '../data/cv';
-import { news } from '../data/news';
-import { talks } from '../data/talks';
 import { visiblePosts } from '../lib/blog';
 
-const allPubs = await getCollection('publications');
-const selectedPubs = allPubs
-  .sort(
-    (a, b) =>
-      b.data.year - a.data.year || a.data.title.localeCompare(b.data.title)
-  )
-  .slice(0, 3);
+const posts = visiblePosts(await getCollection('blog'));
 
-const researchItems = (await getCollection('research')).sort(
-  (a, b) => (b.data.since ?? 0) - (a.data.since ?? 0)
-);
-
-// One coarse 2021–2025 row today, and whatever `cv.ts` grows into later: the CV
-// page reads the same section, so adding entries there updates both.
-const teaching = cv.sections.find((s) => s.title === 'Teaching');
-
-const invitedTalks = talks
-  .filter((talk) => talk.kind === 'invited')
-  .sort((a, b) => b.year - a.year)
-  .slice(0, 4);
-
-const latestPosts = visiblePosts(await getCollection('blog')).slice(0, 3);
+// Blog-first, but not unbounded: the front page shows the most recent handful
+// and /blog/ holds the rest.
+const RECENT = 10;
+const recent = posts.slice(0, RECENT);
+const hasMore = posts.length > recent.length;
 ---
 
-<BaseLayout>
-  <!-- Intro: portrait beside the summary. The banner above already carries the
-       site name and tagline, so this block does not repeat them. -->
-  <section class="intro">
-    <div class="container intro-inner">
-      {site.profileImage && (
-        <img
-          class="intro-portrait"
-          src={site.profileImage}
-          alt={`Portrait of ${site.name}`}
-          width="200"
-          height="267"
-          loading="eager"
-          decoding="async"
-        />
-      )}
-      <div class="intro-text">
-        <h2>About</h2>
-        <p class="lead"><MathText text={cv.summary} /></p>
-        <p class="intro-role">{site.role}</p>
-        <p class="intro-affiliation">
-          {site.affiliation}{site.location ? ` · ${site.location}` : ''}
-        </p>
-        <div class="intro-actions">
-          <a class="btn btn-primary" href="/publications/">Publications</a>
-          <a class="btn btn-secondary" href="/cv/">Curriculum Vitae</a>
-          <a class="btn btn-secondary" href="/projects/">Projects</a>
-        </div>
-      </div>
+<BaseLayout subject={site.blogSubject} description={site.description}>
+  <div class="container">
+    <!-- The identity strip: one line naming who writes this and what it is
+         about. Deliberately not a portrait and not a block of prose, both of
+         which would push the index below the fold. -->
+    <div class="identity">
+      <p class="identity-who">
+        <strong>{site.role}</strong><br />
+        {site.affiliation}{site.location ? ` · ${site.location}` : ''}
+      </p>
+      <p class="identity-what">{site.blogSubject}</p>
     </div>
-  </section>
 
-  <!-- Selected publications -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Selected publications</h2>
-        <a class="section-link" href="/publications/">All publications →</a>
-      </div>
-      {selectedPubs.length === 0 ? (
-        <p class="empty-state">No publications yet.</p>
-      ) : (
-        <ul class="pub-list">
-          {selectedPubs.map((pub) => <PublicationCard pub={pub} />)}
-        </ul>
-      )}
-    </div>
-  </section>
-
-  <!-- Research areas -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Research areas</h2>
-        <a class="section-link" href="/research/">View research →</a>
-      </div>
-      {researchItems.length === 0 ? (
-        <p class="empty-state">No research areas yet.</p>
-      ) : (
-        <ul class="research-list">
-          {researchItems.map((item) => <ResearchCard item={item} />)}
-        </ul>
-      )}
-    </div>
-  </section>
-
-  <!-- Teaching. Reads the CV's own section, so the two never drift. -->
-  {teaching && teaching.entries.length > 0 && (
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <h2>Teaching</h2>
-          <a class="section-link" href="/cv/">Full CV →</a>
-        </div>
-        <div class="cv-section">
-          {teaching.entries.map((entry) => (
-            <div class="cv-entry">
-              <div class="cv-entry-head">
-                <div>
-                  <span class="cv-entry-title">
-                    <MathText text={entry.title} />
-                  </span>
-                  {entry.where && (
-                    <span class="cv-entry-where">
-                      {' '}
-                      — <MathText text={entry.where} />
-                    </span>
-                  )}
-                </div>
-                <span class="cv-entry-date">{entry.date}</span>
-              </div>
-              {entry.detail && (
-                <p class="cv-entry-detail">
-                  <MathText text={entry.detail} />
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- News -->
-  {news.length > 0 && (
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <h2>News</h2>
-        </div>
-        <ul class="news-list">
-          {news.map((n) => (
-            <li class="news-item">
-              <time class="news-date" datetime={n.date}>{n.date}</time>
-              <p><MathText text={n.text} /></p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  <!-- Invited talks. No talks page exists, so no section link. -->
-  {invitedTalks.length > 0 && (
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <h2>Invited talks</h2>
-        </div>
-        <ul class="news-list">
-          {invitedTalks.map((talk) => (
-            <li class="news-item">
-              <time class="news-date" datetime={talk.date}>{talk.date}</time>
-              <p>
-                {talk.title ? (
-                  <>
-                    <MathText text={talk.title} /> —{' '}
-                  </>
-                ) : null}
-                <strong><MathText text={talk.venue} /></strong>
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  <!-- Latest blog posts -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Latest blog posts</h2>
-        <a class="section-link" href="/blog/">All posts →</a>
-      </div>
-      {latestPosts.length === 0 ? (
+    {
+      recent.length === 0 ? (
         <p class="empty-state">No posts yet.</p>
       ) : (
-        <ul class="post-list">
-          {latestPosts.map((post) => <BlogCard post={post} headingLevel={2} />)}
-        </ul>
-      )}
-    </div>
-  </section>
+        <div class="index-block">
+          <IndexLabels labels={['Date', 'Post', 'Topics']} />
+          <ul class="index">
+            {recent.map((post) => (
+              <PostRow post={post} headingLevel={2} />
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <p class="post-back">
+      <a href="/blog/">
+        {hasMore ? `All ${posts.length} posts →` : 'Archive →'}
+      </a>
+    </p>
+  </div>
 </BaseLayout>

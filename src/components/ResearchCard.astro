@@ -15,26 +15,32 @@ const { title, status, since, keywords } = item.data;
 const { Content } = await render(item);
 ---
 
-<li class="research-item">
-  <div class="research-head">
-    <Title class="research-title"><MathText text={title} /></Title>
-    <div class="research-meta">
-      {status && <span class={`status status-${status}`}>{status}</span>}
-      {since && <time>{since}</time>}
-    </div>
-  </div>
-
-  <div class="research-body">
-    <Content />
-  </div>
-
-  {keywords.length > 0 && (
-    <ul class="chip-row" aria-label="Keywords">
-      {keywords.map((k) => (
-        <li class="chip">
-          <MathText text={k} />
-        </li>
-      ))}
-    </ul>
+<li class="index-row">
+  {since && (
+    <time class="research-since col-1" datetime={String(since)}>
+      {since}
+    </time>
   )}
+
+  <div class="col-2">
+    <Title class="research-title"><MathText text={title} /></Title>
+
+    <div class="research-body">
+      <Content />
+    </div>
+
+    {keywords.length > 0 && (
+      <ul class="chip-row" aria-label="Keywords">
+        {keywords.map((k) => (
+          <li class="chip">
+            <MathText text={k} />
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <div class="research-meta col-3">
+    {status && <span class={`status status-${status}`}>{status}</span>}
+  </div>
 </li>

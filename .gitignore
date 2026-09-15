@@ -30,3 +30,7 @@ pnpm-debug.log*
 # not needed to build or deploy the site.
 *.pdf
 profile.jpeg
+
+# local verification output (screenshots, printed PDFs, preview logs)
+.shots/
+.preview.log
