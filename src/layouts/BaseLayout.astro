@@ -17,6 +17,10 @@ const pageTitle = title
 // Absolute URL for canonical + Open Graph (falls back to config if `site` unset).
 const SITE_URL = Astro.site ?? new URL(site.url);
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+
+// The home page carries the full-height banner; inner pages get a shorter one
+// so a long page like the CV is not buried under a photograph.
+const isHome = Astro.url.pathname === '/';
 ---
 
 <!doctype html>
@@ -31,38 +35,47 @@ const canonical = new URL(Astro.url.pathname, SITE_URL).href;
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- Libre Franklin, the face Twenty Seventeen ships. Weights map to:
+         300 headings-light, 400 body, 600 nav, 800 site title, 400 italic. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap"
+    />
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
-
-    <!--
-      Stamp the theme before first paint to avoid a light/dark flash.
-      Reads localStorage, falls back to the OS preference, then the toggle
-      (in Nav) flips it. The CSS also has a prefers-color-scheme fallback
-      so the site stays correct even with JS disabled.
-    -->
-    <script is:inline>
-      (function () {
-        var stored = null;
-        try {
-          stored = localStorage.getItem('theme');
-        } catch (e) {}
-        var dark =
-          stored === 'dark' ||
-          (!stored &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.setAttribute(
-          'data-theme',
-          dark ? 'dark' : 'light'
-        );
-      })();
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+
+    <!--
+      The banner, in the same order as Twenty Seventeen: image, then the site
+      title over it, then the nav bar as a sibling below. The image is hidden
+      from assistive tech because it is decoration; the title carries it.
+      With no `bannerImage` set, the header's dark background shows instead.
+    -->
+    <header class:list={['site-header', { 'site-header--short': !isHome }]}>
+      <div class="custom-header-media">
+        {site.bannerImage && <img src={site.bannerImage} alt="" aria-hidden="true" />}
+      </div>
+      <div class="site-branding">
+        {
+          isHome ? (
+            <h1 class="site-title">{site.name}</h1>
+          ) : (
+            <p class="site-title">{site.name}</p>
+          )
+        }
+        <p class="site-description">{site.title}</p>
+      </div>
+    </header>
+
     <Nav />
     <main id="main">
       <slot />

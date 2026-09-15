@@ -21,44 +21,34 @@ const researchItems = (await getCollection('research')).sort(
 ---
 
 <BaseLayout>
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-text">
-        <p class="eyebrow">{site.role}</p>
-        <h1>{site.name}</h1>
-        <p class="tagline">{site.title}</p>
-        <p class="affiliation">
+  <!-- Intro: portrait beside the summary. The banner above already carries the
+       site name and tagline, so this block does not repeat them. -->
+  <section class="intro">
+    <div class="container intro-inner">
+      {site.profileImage && (
+        <img
+          class="intro-portrait"
+          src={site.profileImage}
+          alt={`Portrait of ${site.name}`}
+          width="200"
+          height="267"
+          loading="eager"
+          decoding="async"
+        />
+      )}
+      <div class="intro-text">
+        <h2>About</h2>
+        <p class="lead">{cv.summary}</p>
+        <p class="intro-role">{site.role}</p>
+        <p class="intro-affiliation">
           {site.affiliation}{site.location ? ` · ${site.location}` : ''}
         </p>
-        <div class="berkeley-stripe" aria-hidden="true"></div>
-        <div class="hero-actions">
+        <div class="intro-actions">
           <a class="btn btn-primary" href="/publications/">Publications</a>
           <a class="btn btn-secondary" href="/cv/">Curriculum Vitae</a>
           <a class="btn btn-secondary" href="/projects/">Projects</a>
         </div>
       </div>
-      {site.profileImage && (
-        <img
-          class="hero-portrait"
-          src={site.profileImage}
-          alt={`Portrait of ${site.name}`}
-          width="240"
-          height="320"
-          loading="eager"
-          decoding="async"
-        />
-      )}
-    </div>
-  </section>
-
-  <!-- About -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>About</h2>
-      </div>
-      <p class="lead">{cv.summary}</p>
     </div>
   </section>
 
