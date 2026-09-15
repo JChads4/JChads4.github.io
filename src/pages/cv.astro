@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MathText from '../components/MathText.astro';
 import { cv } from '../data/cv';
 import { site } from '../config';
 
@@ -27,7 +28,7 @@ const { summary, sections, skills } = cv;
           </button>
         </div>
       </div>
-      <p>{summary}</p>
+      <p><MathText text={summary} /></p>
     </div>
   </section>
 
@@ -40,15 +41,22 @@ const { summary, sections, skills } = cv;
             <div class="cv-entry">
               <div class="cv-entry-head">
                 <div>
-                  <span class="cv-entry-title">{entry.title}</span>
+                  <span class="cv-entry-title">
+                    <MathText text={entry.title} />
+                  </span>
                   {entry.where && (
-                    <span class="cv-entry-where"> — {entry.where}</span>
+                    <span class="cv-entry-where">
+                      {' '}
+                      — <MathText text={entry.where} />
+                    </span>
                   )}
                 </div>
                 <span class="cv-entry-date">{entry.date}</span>
               </div>
               {entry.detail && (
-                <p class="cv-entry-detail">{entry.detail}</p>
+                <p class="cv-entry-detail">
+                  <MathText text={entry.detail} />
+                </p>
               )}
             </div>
           ))}

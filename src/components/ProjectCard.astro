@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/projects';
+import MathText from './MathText.astro';
 
 interface Props {
   project: Project;
@@ -14,16 +15,24 @@ const { title, tagline, summary, repoUrl, paperUrl, status, role, keywords } =
 
 <li class="project-item">
   <div class="project-head">
-    <Title class="project-title">{title}</Title>
+    <Title class="project-title"><MathText text={title} /></Title>
     {status && <span class="project-status">{status}</span>}
   </div>
 
-  {tagline && <p class="project-tagline">{tagline}</p>}
-  <p class="project-summary">{summary}</p>
+  {tagline && (
+    <p class="project-tagline">
+      <MathText text={tagline} />
+    </p>
+  )}
+  <p class="project-summary"><MathText text={summary} /></p>
 
   {keywords.length > 0 && (
     <ul class="chip-row" aria-label="Keywords">
-      {keywords.map((k) => <li class="chip">{k}</li>)}
+      {keywords.map((k) => (
+        <li class="chip">
+          <MathText text={k} />
+        </li>
+      ))}
     </ul>
   )}
 

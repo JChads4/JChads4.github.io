@@ -2,6 +2,9 @@
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+// KaTeX's own stylesheet, bundled by Vite so the maths fonts are self-hosted
+// rather than fetched from a CDN at runtime.
+import 'katex/dist/katex.min.css';
 import { site } from '../config';
 
 interface Props {

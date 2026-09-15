@@ -2,10 +2,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PublicationCard from '../components/PublicationCard.astro';
 import ResearchCard from '../components/ResearchCard.astro';
+import BlogCard from '../components/BlogCard.astro';
+import MathText from '../components/MathText.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config';
 import { cv } from '../data/cv';
 import { news } from '../data/news';
+import { talks } from '../data/talks';
+import { visiblePosts } from '../lib/blog';
 
 const allPubs = await getCollection('publications');
 const selectedPubs = allPubs
@@ -18,6 +22,17 @@ const selectedPubs = allPubs
 const researchItems = (await getCollection('research')).sort(
   (a, b) => (b.data.since ?? 0) - (a.data.since ?? 0)
 );
+
+// One coarse 2021–2025 row today, and whatever `cv.ts` grows into later: the CV
+// page reads the same section, so adding entries there updates both.
+const teaching = cv.sections.find((s) => s.title === 'Teaching');
+
+const invitedTalks = talks
+  .filter((talk) => talk.kind === 'invited')
+  .sort((a, b) => b.year - a.year)
+  .slice(0, 4);
+
+const latestPosts = visiblePosts(await getCollection('blog')).slice(0, 3);
 ---
 
 <BaseLayout>
@@ -38,7 +53,7 @@ const researchItems = (await getCollection('research')).sort(
       )}
       <div class="intro-text">
         <h2>About</h2>
-        <p class="lead">{cv.summary}</p>
+        <p class="lead"><MathText text={cv.summary} /></p>
         <p class="intro-role">{site.role}</p>
         <p class="intro-affiliation">
           {site.affiliation}{site.location ? ` · ${site.location}` : ''}
@@ -86,6 +101,43 @@ const researchItems = (await getCollection('research')).sort(
     </div>
   </section>
 
+  <!-- Teaching. Reads the CV's own section, so the two never drift. -->
+  {teaching && teaching.entries.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Teaching</h2>
+          <a class="section-link" href="/cv/">Full CV →</a>
+        </div>
+        <div class="cv-section">
+          {teaching.entries.map((entry) => (
+            <div class="cv-entry">
+              <div class="cv-entry-head">
+                <div>
+                  <span class="cv-entry-title">
+                    <MathText text={entry.title} />
+                  </span>
+                  {entry.where && (
+                    <span class="cv-entry-where">
+                      {' '}
+                      — <MathText text={entry.where} />
+                    </span>
+                  )}
+                </div>
+                <span class="cv-entry-date">{entry.date}</span>
+              </div>
+              {entry.detail && (
+                <p class="cv-entry-detail">
+                  <MathText text={entry.detail} />
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- News -->
   {news.length > 0 && (
     <section class="section">
@@ -97,11 +149,54 @@ const researchItems = (await getCollection('research')).sort(
           {news.map((n) => (
             <li class="news-item">
               <time class="news-date" datetime={n.date}>{n.date}</time>
-              <p>{n.text}</p>
+              <p><MathText text={n.text} /></p>
             </li>
           ))}
         </ul>
       </div>
     </section>
   )}
+
+  <!-- Invited talks. No talks page exists, so no section link. -->
+  {invitedTalks.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Invited talks</h2>
+        </div>
+        <ul class="news-list">
+          {invitedTalks.map((talk) => (
+            <li class="news-item">
+              <time class="news-date" datetime={talk.date}>{talk.date}</time>
+              <p>
+                {talk.title ? (
+                  <>
+                    <MathText text={talk.title} /> —{' '}
+                  </>
+                ) : null}
+                <strong><MathText text={talk.venue} /></strong>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- Latest blog posts -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Latest blog posts</h2>
+        <a class="section-link" href="/blog/">All posts →</a>
+      </div>
+      {latestPosts.length === 0 ? (
+        <p class="empty-state">No posts yet.</p>
+      ) : (
+        <ul class="post-list">
+          {latestPosts.map((post) => <BlogCard post={post} headingLevel={2} />)}
+        </ul>
+      )}
+    </div>
+  </section>
 </BaseLayout>

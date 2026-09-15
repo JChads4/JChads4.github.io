@@ -45,11 +45,14 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
     'Liberation Mono', monospace;
 
-  /* layout — Twenty Seventeen runs two widths: the content column is 740px and
-     the banner/nav chrome is 1000px, so the nav sits visibly wider than the
-     text it belongs to. Keeping both is what makes the offset look right. */
-  --container: 740px; /* content column */
-  --shell: 1000px;    /* banner + nav bar */
+  /* layout — one 1080px page column. Twenty Seventeen runs two widths (740px
+     text, 1000px chrome), which leaves the text sitting in a narrow strip on a
+     wide screen, so we use a single wider column instead. Long-form prose is
+     capped separately by --measure, so cards, images, chip rows and code fill
+     the column while lines of text stay readable. */
+  --container: 1080px; /* the page: banner, nav, cards, images, code */
+  --shell: 1080px;     /* banner + nav bar, aligned with the column */
+  --measure: 48rem;    /* long-form prose (768px), so lines stay readable */
   --gutter: clamp(1.25rem, 5vw, 2rem);
   --radius: 2px;
   --radius-sm: 2px;
@@ -200,6 +203,15 @@ code {
   border-radius: var(--radius-sm);
   padding: 0.12em 0.35em;
 }
+/* The rule above is for inline code, but it also matches the `code` inside a
+   highlighted block, where the padding and the grey slab sit on top of the
+   panel's own background and padding. Inside a `pre`, Shiki has already done
+   the work, so reset both. */
+pre code {
+  background: none;
+  border-radius: 0;
+  padding: 0;
+}
 
 /* Skip link — first tabbable element, revealed on focus */
 .skip-link {
@@ -229,8 +241,14 @@ code {
   padding-inline: var(--gutter);
 }
 
-/* The content column is 740px, which is already a comfortable measure, so
-   nothing inside it needs a cap of its own. */
+/* Prose keeps a readable measure while cards, images, chip rows and code fill
+   the column. Deliberately not applied to `ul`, which is mostly lists of cards
+   (publications, posts, projects) and should span the full width. */
+p,
+blockquote {
+  max-width: var(--measure);
+}
+
 .lead {
   font-size: 1.05rem;
   color: var(--text-muted);
@@ -1018,4 +1036,170 @@ details.abstract p {
   font-size: 0.8rem;
   color: var(--text-faint);
   margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   15. Maths (KaTeX)
+   KaTeX ships its own stylesheet, imported in BaseLayout.astro, which covers
+   glyphs and layout. This covers the one thing it does not: a display equation
+   wider than the column, which would otherwise scroll the whole page sideways.
+   -------------------------------------------------------------------------- */
+.math-block {
+  /* Capped at the prose measure, not the full column. KaTeX centres display
+     maths, so an uncapped block centres it on the page while the text it
+     belongs to is capped and left-aligned: the equation drifts right of its own
+     paragraph. Matching the measure keeps the two on the same axis. */
+  max-width: var(--measure);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   16. Blog
+   The listing reuses `.chip`, `.empty-state` and the `.news-date` treatment,
+   so only the post-specific pieces are defined here.
+
+   The divider lives on the item class, so `.post-list` and `.post-item` are
+   both required: dropping the list rule leaves the borders floating with no
+   list semantics to carry them.
+   -------------------------------------------------------------------------- */
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.post-item {
+  border-bottom: 1px solid var(--border);
+  padding-block: 1.6rem;
+}
+.post-item:last-child {
+  border-bottom: none;
+}
+.post-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.1rem;
+}
+.post-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.post-date {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-faint);
+}
+.post-excerpt {
+  color: var(--text-muted);
+  font-size: 0.96rem;
+  margin-top: 0.6rem;
+}
+
+/* Post header. Same padding as `.page-head`, but deliberately not that class:
+   `.page-head h1` renders the title as a small uppercase label, which is right
+   for a section name and wrong for a post title. */
+.post-header {
+  padding-block: clamp(2rem, 5vw, 3rem) 0.5rem;
+}
+.post-header h1 {
+  font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* Post prose. Paragraphs and blockquotes are already capped at `--measure` by
+   the global rule, so this covers the rest of the long-form elements and the
+   vertical rhythm between them.
+   The reset is `* { margin: 0 }`, so every gap here is declared. Listing the
+   pairs by hand missed `pre`, `table`, `img` and a blockquote after a
+   paragraph, so the rhythm comes from one flow rule instead: any direct child
+   that follows another gets a gap, and a heading pulls its own content closer. */
+.post-body {
+  padding-block: 1.5rem 2rem;
+}
+.post-body h2,
+.post-body h3,
+.post-body ul,
+.post-body ol {
+  max-width: var(--measure);
+}
+.post-body > * + * {
+  margin-top: 1rem;
+}
+.post-body > h2 + *,
+.post-body > h3 + * {
+  margin-top: 0.6rem;
+}
+.post-body h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 2.4rem;
+  text-wrap: balance;
+}
+.post-body h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1.8rem;
+}
+.post-body ul,
+.post-body ol {
+  padding-left: 1.2rem;
+}
+.post-body li + li {
+  margin-top: 0.4rem;
+}
+.post-body blockquote {
+  border-left: 1px solid var(--border-strong);
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+}
+.post-body hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-block: 2.5rem;
+}
+/* Highlighted blocks and display maths take the full column, because both are
+   wide by nature and the measure cap would wrap them early. */
+.post-body pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  margin-block: 1.4rem;
+}
+.post-body img {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-block: 1.4rem;
+}
+/* A table is the third thing allowed to exceed the measure, and it scrolls
+   rather than pushing the page sideways. */
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-block: 1.4rem;
+  font-size: 0.94rem;
+}
+.post-body th,
+.post-body td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+}
+.post-body th {
+  background: var(--bg-soft);
+  font-weight: 600;
+}
+
+.post-back {
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }

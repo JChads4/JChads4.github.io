@@ -1,0 +1,56 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MathText from '../../components/MathText.astro';
+import { formatPostDate, visiblePosts } from '../../lib/blog';
+
+// Drafts are excluded here as well as on the listing: a draft must not get a
+// page of its own, or an entry in the sitemap.
+export const getStaticPaths = (async () => {
+  const posts = visiblePosts(await getCollection('blog'));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, date, excerpt, image } = post.data;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={title} description={excerpt}>
+  <article class="post">
+    <!-- Not .page-head: that renders its h1 as the small uppercase label, which
+         is wrong for a post title. A bare h1 picks up the display scale. -->
+    <header class="post-header">
+      <div class="container">
+        <h1><MathText text={title} /></h1>
+        <time class="news-date post-date" datetime={date}>
+          {formatPostDate(date)}
+        </time>
+      </div>
+    </header>
+
+    <div class="container post-body">
+      {image && (
+        <img
+          class="post-thumb"
+          src={image}
+          alt=""
+          width="740"
+          height="416"
+          decoding="async"
+        />
+      )}
+      <Content />
+    </div>
+  </article>
+
+  <div class="container">
+    <p class="post-back"><a href="/blog/">← All posts</a></p>
+  </div>
+</BaseLayout>

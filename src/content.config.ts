@@ -43,4 +43,33 @@ const research = defineCollection({
   }),
 });
 
-export const collections = { publications, research };
+/**
+ * Blog posts — one Markdown file per post in src/content/blog/.
+ *
+ * Keep filenames flat and slug-like: the filename becomes the entry id and
+ * therefore the URL (`hello-world.md` → `/blog/hello-world/`). A file in a
+ * subdirectory would produce an id containing a slash, which the single-segment
+ * `[slug]` route does not model.
+ */
+const blog = defineCollection({
+  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    /** Publication date. Accepts a quoted `YYYY-MM-DD` or a bare YAML date
+     *  (`date: 2026-09-14` parses as a Date, not a string). Both normalise to
+     *  the same string, which sorts chronologically and cannot shift a day
+     *  through a timezone conversion at render time. */
+    date: z
+      .union([z.iso.date(), z.date()])
+      .transform((v) => (typeof v === 'string' ? v : v.toISOString().slice(0, 10))),
+    /** One-paragraph summary for the listing and the meta description. */
+    excerpt: z.string().optional(),
+    /** Optional featured image path under /public. */
+    image: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    /** Drafts build in dev but are absent from production and from the sitemap. */
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { publications, research, blog };

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+import { visiblePosts } from '../../lib/blog';
+
+const posts = visiblePosts(await getCollection('blog'));
+---
+
+<BaseLayout
+  title="Blog"
+  description="Working notes on machine learning and physics-informed neural networks."
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Blog</h1>
+      <p>
+        Working notes on machine learning and physics-informed neural networks:
+        what the losses actually measure, how training behaves, and small pieces
+        of PyTorch. Written up while the detail is still fresh.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {
+        posts.length === 0 ? (
+          <p class="empty-state">No posts yet.</p>
+        ) : (
+          <ul class="post-list">
+            {posts.map((post) => (
+              <BlogCard post={post} headingLevel={2} />
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

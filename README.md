@@ -8,7 +8,9 @@ Static output — fast, accessible, and deployable to GitHub Pages, Netlify, or 
 
 | Route            | Purpose                                        |
 | ---------------- | ---------------------------------------------- |
-| `/`              | Home — about, selected publications, research, news |
+| `/`              | Home — about, selected publications, research, teaching, news, invited talks, latest posts |
+| `/blog/`         | Blog listing (newest first, drafts excluded)   |
+| `/blog/<slug>/`  | One page per post                              |
 | `/research/`     | Research areas (from content collections)      |
 | `/publications/` | Full publication list, grouped by year         |
 | `/cv/`           | Structured CV (positions, education, awards, …) |
@@ -101,38 +103,95 @@ keywords: ["…", "…"]
 Describe the thread in 2–3 sentences.
 ```
 
-### 4. CV — `src/data/cv.ts`
+### 4. Blog posts — one Markdown file per post
+
+Add files to `src/content/blog/`. Keep filenames flat and slug-like: the
+filename becomes the URL (`hello-world.md` → `/blog/hello-world/`), and a file
+in a subdirectory would produce a slug containing a slash, which the
+single-segment route does not model.
+
+```md
+---
+title: "What a PINN actually minimises"
+date: 2026-09-02      # quoted 'YYYY-MM-DD' or a bare YAML date, both fine
+excerpt: "One paragraph for the listing and the meta description."
+image: "/images/post.jpg"   # optional thumbnail under public/
+tags: ["pinns"]
+draft: false          # drafts build in dev, never in production
+---
+
+Body in Markdown. Maths works: `$x$` inline and `$$…$$` displayed.
+```
+
+Posts are ordered newest first. A `draft: true` post is visible at
+`npm run dev` and absent from a production build, the listing, and the sitemap.
+The blog's subject matter is machine learning and physics-informed neural
+networks; the publications, research, projects and CV are the real
+nuclear-physics record and are independent of it.
+
+### 5. Talks — `src/data/talks.ts`
+
+One entry per talk, driving the front-page "Invited talks" block (filtered to
+`kind: 'invited'`). `year` is a number for ordering; `date` is the display
+string. The CV rows are coarser than this list, so the two are maintained
+separately.
+
+```ts
+{ venue: 'University of Jyväskylä', year: 2023, date: '2023', kind: 'invited' }
+```
+
+### 6. CV — `src/data/cv.ts`
 
 Edit `education`, `positions`, `awards`, `teaching`, and `service` arrays
 (oldest first; the page renders them in order). `summary` feeds the home page
-and the CV header. To offer a printable PDF, drop `cv.pdf` in `public/` and
-set `site.cvPdf` to `'/cv.pdf'`.
+and the CV header. The home page's Teaching block reads this file's `Teaching`
+section directly, so adding entries there updates both pages. To offer a
+printable PDF, drop `cv.pdf` in `public/` and set `site.cvPdf` to `'/cv.pdf'`.
 
-### 5. News — `src/data/news.ts`
+### 7. News — `src/data/news.ts`
 
 Short dated updates shown on the home page. List most recent first.
 
-### 6. Look & feel
+### 8. Maths
+
+Maths is rendered by [KaTeX](https://katex.org) **at build time**, so no
+client-side JavaScript is shipped. Astro 7's default Markdown processor
+(Sätteri) parses `$…$` and `$$…$$` natively but does not render it, so two
+plugins in `src/lib/katex-math.mjs` do the rendering: one in the mdast phase for
+display maths, one in the hast phase for inline. The split is not arbitrary:
+Astro's syntax highlighter runs on `pre` elements ahead of user plugins, so
+display maths has to be replaced before it ever becomes a code block.
+
+Frontmatter and `src/data/*.ts` never reach the Markdown pipeline, so maths in a
+plain string (a publication title, a CV detail) is rendered with the
+`MathText` component instead.
+
+### 9. Look & feel
 
 All colours, spacing, and typography are CSS variables in
 `src/styles/global.css` (section 1). `--accent` is the near-black `#222` used
 for headings and links; the theme is deliberately monochrome, so there is no
-accent hue to change. `--container` (740px) sets the text column and `--shell`
-(1000px) the banner and nav bar.
+accent hue to change. `--container` (1080px) and `--shell` (1080px) set the page
+column, and `--measure` (48rem) caps long-form prose inside it, so cards, chip
+rows, images and code fill the column while lines of text stay readable.
 
 ## Project structure
 
 ```
 src/
-├── content.config.ts        # collections schema (publications, research)
+├── content.config.ts        # collections schema (publications, research, blog)
 ├── content/
 │   ├── publications/*.md    # one file per paper
-│   └── research/*.md        # one file per research area
-├── data/                    # cv.ts, news.ts (structured content)
+│   ├── research/*.md        # one file per research area
+│   └── blog/*.md            # one file per post (flat filenames)
+├── data/                    # cv.ts, news.ts, talks.ts (structured content)
+├── lib/
+│   ├── katex-math.mjs       # build-time maths rendering
+│   └── blog.ts              # post dates, hrefs, draft filtering
 ├── config.ts                # site-wide identity (name, email, socials)
-├── components/              # Nav, Footer, cards
+├── components/              # Nav, Footer, cards, MathText
 ├── layouts/BaseLayout.astro # HTML shell, meta, banner, fonts
-├── pages/                   # the five routes + generated robots.txt
+├── pages/                   # the routes + generated robots.txt
 └── styles/global.css        # design system
 
 public/                     # static assets (favicon.svg) copied to dist/
