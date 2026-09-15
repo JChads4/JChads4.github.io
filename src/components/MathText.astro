@@ -1,0 +1,25 @@
+---
+import katex from 'katex';
+
+interface Props {
+  /** A plain string, with inline maths written between single dollars. */
+  text: string;
+}
+
+const { text } = Astro.props;
+
+// Content frontmatter and src/data/*.ts hold plain strings, so their maths never
+// reaches the Markdown pipeline and has to be rendered here. Splitting on the
+// capture group puts the expressions at the odd indices; Astro escapes the rest.
+const parts = text.split(/\$([^$]+)\$/g);
+---
+
+{
+  parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <Fragment set:html={katex.renderToString(part, { throwOnError: false })} />
+    ) : (
+      part
+    )
+  )
+}

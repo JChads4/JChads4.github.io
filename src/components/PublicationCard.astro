@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import MathText from './MathText.astro';
 import { selfAuthorNames } from '../config';
 
 interface Props {
@@ -53,10 +54,10 @@ const titleUrl = pdf ?? arxivUrl ?? doiUrl;
   <h3 class="pub-title">
     {titleUrl ? (
       <a href={titleUrl} target="_blank" rel="noopener noreferrer">
-        {title}
+        <MathText text={title} />
       </a>
     ) : (
-      title
+      <MathText text={title} />
     )}
   </h3>
 
@@ -78,7 +79,9 @@ const titleUrl = pdf ?? arxivUrl ?? doiUrl;
   {keywords.length > 0 && (
     <ul class="chip-row" aria-label="Keywords">
       {keywords.map((k) => (
-        <li class="chip">{k}</li>
+        <li class="chip">
+          <MathText text={k} />
+        </li>
       ))}
     </ul>
   )}
@@ -101,7 +104,7 @@ const titleUrl = pdf ?? arxivUrl ?? doiUrl;
   {showAbstract && abstract && (
     <details class="abstract">
       <summary>Abstract</summary>
-      <p>{abstract}</p>
+      <p><MathText text={abstract} /></p>
     </details>
   )}
 </li>

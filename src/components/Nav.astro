@@ -1,6 +1,7 @@
 ---
 const links = [
   { href: '/', label: 'Home' },
+  { href: '/blog/', label: 'Blog' },
   { href: '/research/', label: 'Research' },
   { href: '/publications/', label: 'Publications' },
   { href: '/projects/', label: 'Projects' },
@@ -10,6 +11,7 @@ const links = [
 
 const path = Astro.url.pathname;
 
+// `startsWith` means a post at /blog/foo/ also highlights Blog.
 function isActive(href: string): boolean {
   if (href === '/') return path === '/' || path === '';
   return path.startsWith(href);

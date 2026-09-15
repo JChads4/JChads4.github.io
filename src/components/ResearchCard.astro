@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
+import MathText from './MathText.astro';
 
 interface Props {
   item: CollectionEntry<'research'>;
@@ -16,7 +17,7 @@ const { Content } = await render(item);
 
 <li class="research-item">
   <div class="research-head">
-    <Title class="research-title">{title}</Title>
+    <Title class="research-title"><MathText text={title} /></Title>
     <div class="research-meta">
       {status && <span class={`status status-${status}`}>{status}</span>}
       {since && <time>{since}</time>}
@@ -30,7 +31,9 @@ const { Content } = await render(item);
   {keywords.length > 0 && (
     <ul class="chip-row" aria-label="Keywords">
       {keywords.map((k) => (
-        <li class="chip">{k}</li>
+        <li class="chip">
+          <MathText text={k} />
+        </li>
       ))}
     </ul>
   )}
