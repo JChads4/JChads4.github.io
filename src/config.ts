@@ -8,9 +8,7 @@
 export const site = {
   /** Full name, used in the header, footer, and page titles. */
   name: 'Jamie Chadderton',
-  /** Short first name shown as the header wordmark. */
-  firstName: 'Jamie',
-  /** One-line research summary (used as the hero tagline + meta description). */
+  /** One-line research summary (banner tagline + meta description). */
   title:
     'Experimental nuclear physics — heavy and superheavy element spectroscopy',
   /** Current academic role. */
@@ -24,8 +22,13 @@ export const site = {
     'Academic portfolio of Jamie Chadderton, PhD — experimental nuclear physics research, publications, and CV.',
   /** Deployed URL — keep in sync with astro.config.mjs `site`. */
   url: 'https://JChads4.github.io',
-  /** Path to a portrait used in the hero section (lives in /public). */
+  /** Path to a portrait shown beside the home-page summary (lives in /public). */
   profileImage: '/images/profile.jpg',
+  /**
+   * Full-bleed banner image behind the site title, on every page (lives in
+   * /public). Around 1600x960 works well. Empty = a plain dark banner.
+   */
+  bannerImage: '',
   /** Optional link to a PDF of your CV (place the file in public/). Empty = hidden. */
   cvPdf: '',
 } as const;

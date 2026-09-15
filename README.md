@@ -1,20 +1,23 @@
 # Academic Portfolio
 
-A modern-minimal academic research portfolio built with [Astro](https://astro.build).
+A minimal academic research portfolio built with [Astro](https://astro.build),
+styled after the WordPress Twenty Seventeen theme.
 Static output — fast, accessible, and deployable to GitHub Pages, Netlify, or Vercel.
 
 ## Pages
 
 | Route            | Purpose                                        |
 | ---------------- | ---------------------------------------------- |
-| `/`              | Home — hero, selected publications, research, news |
+| `/`              | Home — about, selected publications, research, news |
 | `/research/`     | Research areas (from content collections)      |
 | `/publications/` | Full publication list, grouped by year         |
 | `/cv/`           | Structured CV (positions, education, awards, …) |
 | `/contact/`      | Email, office, social links                   |
 
-Dark mode is supported and follows your system preference; the toggle in the
-header persists your choice.
+The design follows the WordPress **Twenty Seventeen** theme: grey only, flat
+borders instead of shadows, a full-bleed banner behind the site title, and a
+white nav bar wider than the text column. There is no colour accent and no dark
+mode, both deliberate.
 
 ## Quick start
 
@@ -37,11 +40,12 @@ Everything personal lives in a few obvious places:
 ```ts
 export const site = {
   name: 'Jamie Morgan',        // your full name
-  firstName: 'Jamie',          // wordmark in the header
-  title: 'Research on …',      // hero tagline + meta description
+  title: 'Research on …',      // banner tagline + meta description
   role: 'Assistant Professor',
   affiliation: '…',
   location: '…',
+  profileImage: '/images/profile.jpg', // portrait beside the home-page summary
+  bannerImage: '',             // full-bleed banner, ~1600x960; empty = plain dark banner
   cvPdf: '',                   // set to '/cv.pdf' (place the file in public/) to show the button
   url: 'https://example.org',  // keep in sync with astro.config.mjs
 };
@@ -78,8 +82,8 @@ abstract: "One paragraph, shown under a collapsible Abstract."
 Optional longer description (rendered if the page shows it).
 ```
 
-Your name is **bolded** in author lists automatically when it matches
-`site.name`.
+Your name is **bolded** in author lists automatically when it matches an entry
+in `selfAuthorNames` in `src/config.ts`.
 
 ### 3. Research areas — one Markdown file per topic
 
@@ -110,8 +114,11 @@ Short dated updates shown on the home page. List most recent first.
 
 ### 6. Look & feel
 
-All colors, spacing, and typography are CSS variables in
-`src/styles/global.css` (sections 1–2). The accent color is `--accent`.
+All colours, spacing, and typography are CSS variables in
+`src/styles/global.css` (section 1). `--accent` is the near-black `#222` used
+for headings and links; the theme is deliberately monochrome, so there is no
+accent hue to change. `--container` (740px) sets the text column and `--shell`
+(1000px) the banner and nav bar.
 
 ## Project structure
 
@@ -123,8 +130,8 @@ src/
 │   └── research/*.md        # one file per research area
 ├── data/                    # cv.ts, news.ts (structured content)
 ├── config.ts                # site-wide identity (name, email, socials)
-├── components/              # Nav, Footer, ThemeToggle, cards
-├── layouts/BaseLayout.astro # HTML shell, meta, theme bootstrapping
+├── components/              # Nav, Footer, cards
+├── layouts/BaseLayout.astro # HTML shell, meta, banner, fonts
 ├── pages/                   # the five routes + generated robots.txt
 └── styles/global.css        # design system
 
