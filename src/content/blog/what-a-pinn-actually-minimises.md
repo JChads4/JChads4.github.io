@@ -38,6 +38,11 @@ just places where we have decided to insist the equation holds, and we can draw
 as many as we like for free. That is the whole trick: the equation supplies
 supervision in regions where no data exists.
 
+<figure class="figure">
+  <img src="/images/blog/pinn-collocation.svg" width="720" height="340" alt="The damped oscillator solution x(t) for t from 0 to 10, with twenty collocation points spread along the time axis and the initial conditions marked at t = 0." />
+  <figcaption>The loss above, drawn. With μ = 0.5 and k = 4, the network sees two fixed values at t = 0 and nothing else; at each collocation point it is only asked whether the equation holds.</figcaption>
+</figure>
+
 ## Where the derivatives come from
 
 Nothing here is discretised. The derivatives in the residual are taken by

@@ -300,13 +300,14 @@ src/
 │   ├── TalkRow.astro        # a talk as an index row
 │   ├── PublicationCard.astro, ResearchCard.astro, ProjectCard.astro
 │   ├── MathText.astro       # maths in frontmatter and src/data strings
+│   ├── NuclideChart.astro   # the chart-of-nuclides figure on /research/
 │   └── Footer.astro
 ├── layouts/BaseLayout.astro # HTML shell, meta, masthead, rail, fonts
 ├── pages/                   # the routes + generated robots.txt
 └── styles/global.css        # design system, print last
 
 scripts/                    # headless-Chrome probes for layout and print
-public/                     # static assets (favicon.svg) copied to dist/
+public/                     # static assets (favicon.svg, images/blog/*.svg figures)
 ```
 
 ## Deployment

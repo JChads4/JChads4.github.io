@@ -1,0 +1,277 @@
+---
+/**
+ * A corner of the chart of the nuclides: the heavy and superheavy region,
+ * neutrons across and protons up, with the nuclei this research has studied
+ * marked on it. Schematic in one respect only: the grid shows every (N, Z)
+ * cell rather than the nuclei known to exist. Every marked position is exact.
+ *
+ * Built at render time from the arrays below, so adding a nucleus is one line.
+ * Colours come from the stylesheet's tokens (section 20), so the figure follows
+ * the theme and prints in black and white with the rest of the page.
+ */
+
+interface Nucleus {
+  /** Mass number, for the label. */
+  A: number;
+  symbol: string;
+  Z: number;
+  N: number;
+  /** What was done with it. Shown on hover and read by screen readers. */
+  note: string;
+  /** Which side of the cell the label sits on. */
+  labelSide?: 'left' | 'right';
+}
+
+const studied: Nucleus[] = [
+  {
+    A: 250,
+    symbol: 'Fm',
+    Z: 100,
+    N: 150,
+    note: 'Conversion-electron and γ-ray spectroscopy at SAGE (JYFL): the PhD thesis.',
+    labelSide: 'left',
+  },
+  {
+    A: 254,
+    symbol: 'No',
+    Z: 102,
+    N: 152,
+    note: 'Rotational-band simulation with PATRON.',
+    labelSide: 'right',
+  },
+  {
+    A: 290,
+    symbol: 'Lv',
+    Z: 116,
+    N: 174,
+    note: 'Produced with a ⁵⁰Ti beam at the 88-Inch Cyclotron (PRL 2024).',
+    labelSide: 'left',
+  },
+];
+
+/** Element symbols for the even-Z axis labels. */
+const elements: Record<number, string> = {
+  100: 'Fm',
+  102: 'No',
+  104: 'Rf',
+  106: 'Sg',
+  108: 'Hs',
+  110: 'Ds',
+  112: 'Cn',
+  114: 'Fl',
+  116: 'Lv',
+  118: 'Og',
+  120: '',
+};
+
+// Plot geometry. N runs left to right, Z bottom to top, as on every chart of
+// the nuclides.
+const W = 720;
+const H = 380;
+const pad = { left: 74, right: 20, top: 24, bottom: 46 };
+const N0 = 146;
+const N1 = 190;
+const Z0 = 98;
+const Z1 = 122;
+const dx = (W - pad.left - pad.right) / (N1 - N0);
+const dy = (H - pad.top - pad.bottom) / (Z1 - Z0);
+const x = (n: number) => pad.left + (n - N0) * dx;
+const y = (z: number) => H - pad.bottom - (z - Z0) * dy;
+
+const nTicks = [150, 160, 170, 180, 190];
+const zTicks = Object.keys(elements).map(Number);
+
+// The deformed shell gaps at N = 152 and N = 162, and the predicted spherical
+// closure at N = 184 around which the island of stability is expected.
+const gaps = [
+  { N: 152, label: 'N = 152' },
+  { N: 162, label: 'N = 162' },
+];
+const island = { N: 184, Z: 116, rN: 5, rZ: 4.5 };
+
+// Ten neutrons between the heaviest Lv made here and the predicted closure.
+const lv = studied.find((s) => s.symbol === 'Lv')!;
+---
+
+<figure class="figure nuclide-figure">
+  <!-- The frame scrolls sideways on a phone rather than shrinking the chart
+       until its labels are unreadable. Focusable, so a keyboard can scroll it. -->
+  <div class="figure-frame" tabindex="0" role="group" aria-label="Chart of the nuclides, scrollable">
+  <svg
+    class="nuclide-chart"
+    viewBox={`0 0 ${W} ${H}`}
+    role="img"
+    aria-labelledby="nuclide-title nuclide-desc"
+  >
+    <title id="nuclide-title">The heavy-element corner of the chart of the nuclides</title>
+    <desc id="nuclide-desc">
+      Neutron number N from {N0} to {N1} across, proton number Z from {Z0} to
+      {Z1} up. Marked: {studied.map((s) => `${s.A}${s.symbol} (Z ${s.Z}, N ${s.N})`).join('; ')}.
+      Dashed lines mark the deformed shell gaps at N = 152 and N = 162, and a
+      dashed ellipse marks the predicted island of stability near N = 184.
+    </desc>
+
+    <defs>
+      <pattern
+        id="nuclide-cells"
+        x={pad.left}
+        y={pad.top}
+        width={dx}
+        height={dy}
+        patternUnits="userSpaceOnUse"
+      >
+        <rect
+          class="nc-cell"
+          x="0.75"
+          y="0.75"
+          width={dx - 1.5}
+          height={dy - 1.5}
+          rx="1.5"
+        />
+      </pattern>
+    </defs>
+
+    <!-- The grid: one cell per (N, Z). Recessive, as texture only. -->
+    <rect
+      x={pad.left}
+      y={pad.top}
+      width={W - pad.left - pad.right}
+      height={H - pad.top - pad.bottom}
+      fill="url(#nuclide-cells)"
+    />
+
+    <!-- Axes -->
+    {
+      nTicks.map((n) => (
+        <g>
+          <line class="nc-tick" x1={x(n) + dx / 2} x2={x(n) + dx / 2} y1={H - pad.bottom} y2={H - pad.bottom + 5} />
+          <text class="nc-axis" x={x(n) + dx / 2} y={H - pad.bottom + 18} text-anchor="middle">
+            {n}
+          </text>
+        </g>
+      ))
+    }
+    <text class="nc-axis-title" x={(pad.left + W - pad.right) / 2} y={H - 6} text-anchor="middle">
+      Neutron number N →
+    </text>
+    {
+      zTicks.map((z) => (
+        <text class="nc-axis" x={pad.left - 8} y={y(z) - dy / 2 + 4} text-anchor="end">
+          {z} {elements[z]}
+        </text>
+      ))
+    }
+    <text
+      class="nc-axis-title"
+      transform={`translate(14 ${(pad.top + H - pad.bottom) / 2}) rotate(-90)`}
+      text-anchor="middle"
+    >
+      Proton number Z →
+    </text>
+
+    <!-- Shell gaps -->
+    {
+      gaps.map((g) => (
+        <g>
+          <line
+            class="nc-gap"
+            x1={x(g.N) + dx / 2}
+            x2={x(g.N) + dx / 2}
+            y1={pad.top}
+            y2={H - pad.bottom}
+          />
+          <text class="nc-note" x={x(g.N) + dx / 2 + 5} y={pad.top + 12}>
+            {g.label}
+          </text>
+        </g>
+      ))
+    }
+
+    <!-- The predicted island -->
+    <ellipse
+      class="nc-island"
+      cx={x(island.N) + dx / 2}
+      cy={y(island.Z) - dy / 2}
+      rx={island.rN * dx}
+      ry={island.rZ * dy}
+    >
+      <title>Predicted island of stability, around the spherical closure at N = 184</title>
+    </ellipse>
+    <text
+      class="nc-note"
+      x={x(island.N) + dx / 2}
+      y={y(island.Z - island.rZ) + 4}
+      text-anchor="middle"
+    >
+      predicted island
+    </text>
+    <text
+      class="nc-note"
+      x={x(island.N) + dx / 2}
+      y={y(island.Z - island.rZ) + 16}
+      text-anchor="middle"
+    >
+      of stability
+    </text>
+
+    <!-- The distance from the heaviest nucleus here to the island -->
+    <line
+      class="nc-reach"
+      x1={x(lv.N) + dx + 3}
+      x2={x(island.N - island.rN) - 4}
+      y1={y(lv.Z) - dy / 2}
+      y2={y(lv.Z) - dy / 2}
+      marker-end="url(#nuclide-arrow)"
+    />
+    <defs>
+      <marker
+        id="nuclide-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path class="nc-arrowhead" d="M0 0 10 5 0 10z" />
+      </marker>
+    </defs>
+    <text class="nc-note" x={x(island.N - island.rN) - 4} y={y(lv.Z) - dy - 5} text-anchor="end">
+      10 neutrons to N = 184
+    </text>
+
+    <!-- The studied nuclei: gold cells with a blue outline and a direct label,
+         so they never rely on the gold alone. -->
+    {
+      studied.map((s) => {
+        const cx = x(s.N);
+        const cy = y(s.Z) - dy;
+        const left = s.labelSide === 'left';
+        return (
+          <g class="nc-studied" tabindex="0">
+            <title>
+              {`${s.A}${s.symbol} (Z = ${s.Z}, N = ${s.N}). ${s.note}`}
+            </title>
+            <rect class="nc-mark" x={cx - 1} y={cy - 1} width={dx + 2} height={dy + 2} rx="2.5" />
+            <text
+              class="nc-label"
+              x={left ? cx - 6 : cx + dx + 6}
+              y={cy + dy / 2 + 5}
+              text-anchor={left ? 'end' : 'start'}
+            >
+              <tspan class="nc-mass" dy="-5">{s.A}</tspan>
+              <tspan dy="5">{s.symbol}</tspan>
+            </text>
+          </g>
+        );
+      })
+    }
+  </svg>
+  </div>
+  <figcaption>
+    The heavy-element corner of the chart of the nuclides. Gold cells are the
+    nuclei studied in this work; hover or focus one for what was done with it.
+    Dashed lines mark the deformed shell gaps at N = 152 and 162, and the
+    ellipse the predicted island of stability near N = 184.
+  </figcaption>
+</figure>

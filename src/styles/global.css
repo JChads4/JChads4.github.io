@@ -368,9 +368,9 @@ main .container {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: clamp(1.5rem, 5vw, 3rem);
+  column-gap: clamp(1.25rem, 4vw, 2.5rem);
   row-gap: 0.5rem;
-  margin-block: 1.75rem 2rem;
+  margin-block: 1.75rem 1.5rem;
   padding: 1rem 1.25rem;
   color: var(--on-highlight);
   background: var(--highlight);
@@ -399,10 +399,74 @@ main .container {
   line-height: 1.3;
   max-width: var(--measure);
 }
+.identity-emblem {
+  grid-row: span 2;
+  width: clamp(3rem, 7vw, 4.5rem);
+  height: auto;
+  color: var(--accent);
+}
 @media screen and (max-width: 47.99em) {
-  .identity {
-    grid-template-columns: minmax(0, 1fr);
+  .identity-emblem {
+    align-self: start;
   }
+}
+
+/* The home page's stat tiles: four counts, each a door into its page. Big
+   Fraunces figures over mono labels, in the same panel-and-shadow language as
+   the listings, with a press on hover. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 0;
+  list-style: none;
+}
+@media screen and (max-width: 47.99em) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.75rem 1rem 0.85rem;
+  text-decoration: none;
+  color: var(--accent);
+  background: var(--surface);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    background-color 100ms ease;
+}
+.stat:hover {
+  color: var(--on-highlight);
+  background: var(--highlight);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+.stat:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--shadow-color);
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 /* Page scaffolding. Six routes share this shape: a title and one line of
@@ -1138,9 +1202,29 @@ details.abstract p {
 .cv-section h2 {
   margin-bottom: 0.5rem;
 }
+/* Each section is a timeline: a blue spine down the left, a gold stop at each
+   entry. The spine is the entries' own left border, so it runs unbroken from
+   the first entry to the last with no extra markup. */
 .cv-entry {
-  padding-block: var(--row-pad);
+  position: relative;
+  margin-left: 0.4rem;
+  padding: var(--row-pad) 0 var(--row-pad) 1.35rem;
   border-bottom: var(--rule);
+  border-left: 2px solid var(--accent);
+}
+.cv-entry::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: calc(var(--row-pad) + 0.3rem);
+  width: 12px;
+  height: 12px;
+  background: var(--california-gold);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+}
+.cv-section > .cv-entry-detail {
+  margin-bottom: 0.25rem;
 }
 .cv-entry:last-child {
   border-bottom: none;
@@ -1515,6 +1599,137 @@ details.abstract p {
 }
 
 /* --------------------------------------------------------------------------
+   18a. Figures
+   A figure is a panel like a listing, with a mono caption beneath. The nuclide
+   chart is inline SVG drawn from the tokens below, so it follows the theme and
+   prints in black and white; the blog figures are standalone SVG files with
+   the same colours baked in.
+   -------------------------------------------------------------------------- */
+.figure {
+  margin-block: 0 2.25rem;
+}
+.post-body .figure {
+  margin-block: 1.75rem;
+}
+.figure > img,
+.figure-frame {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  background: var(--surface);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.figure-frame {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.figure-frame:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.figure-frame > svg {
+  width: 100%;
+  min-width: 620px;
+  height: auto;
+}
+.figure figcaption {
+  max-width: var(--measure);
+  margin-top: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--leading);
+  color: var(--text-muted);
+}
+
+.nuclide-chart text {
+  font-family: var(--font-mono);
+}
+.nc-cell {
+  fill: var(--bg);
+  stroke: var(--border);
+  stroke-width: 0.75;
+}
+.nc-axis {
+  font-size: 11px;
+  fill: var(--text-faint);
+}
+.nc-axis-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  fill: var(--accent);
+}
+.nc-tick {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.nc-gap {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+.nc-island {
+  fill: rgb(253 181 21 / 0.18);
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
+.nc-reach {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+.nc-arrowhead {
+  fill: var(--accent);
+}
+.nc-note {
+  font-size: 11px;
+  fill: var(--text-muted);
+}
+.nc-mark {
+  fill: var(--california-gold);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.nc-label {
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--text);
+}
+.nc-mass {
+  font-size: 9px;
+}
+.nc-studied {
+  cursor: help;
+  outline: none;
+}
+.nc-studied:hover .nc-mark,
+.nc-studied:focus-visible .nc-mark {
+  stroke-width: 3.5;
+}
+.nc-studied:focus-visible .nc-label {
+  text-decoration: underline;
+}
+
+/* The 404's numeral: the display face at its largest, on the racing stripe. */
+.page-head .big-404 {
+  width: max-content;
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: clamp(5rem, 16vw, 9rem);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.95;
+  color: var(--accent);
+  text-shadow: 6px 6px 0 var(--california-gold);
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.75rem;
+  background: var(--stripe) left bottom / 100% 10px no-repeat;
+}
+
+/* --------------------------------------------------------------------------
    18. Motion & reduced motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -1531,7 +1746,9 @@ details.abstract p {
   .btn:hover,
   .btn:active,
   .pub-link:hover,
-  .pub-link:active {
+  .pub-link:active,
+  .stat:hover,
+  .stat:active {
     transform: none;
   }
 }
@@ -1627,6 +1844,26 @@ details.abstract p {
   .contact-figure {
     transform: none;
     box-shadow: none;
+  }
+  .stats,
+  .identity-emblem {
+    display: none;
+  }
+  .cv-entry {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+  }
+  .cv-entry::before {
+    display: none;
+  }
+  .figure-frame,
+  .figure > img {
+    box-shadow: none;
+    border-color: var(--border);
+  }
+  .figure {
+    break-inside: avoid;
   }
   /* A row split across a page break loses its column context: the printed
      /publications/ PDF opened page 2 with the second line of a title and no

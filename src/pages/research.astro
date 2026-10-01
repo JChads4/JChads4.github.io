@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IndexLabels from '../components/IndexLabels.astro';
 import ResearchCard from '../components/ResearchCard.astro';
+import NuclideChart from '../components/NuclideChart.astro';
 import { getCollection } from 'astro:content';
 
 const researchItems = (await getCollection('research')).sort(
@@ -26,6 +27,8 @@ const researchItems = (await getCollection('research')).sort(
 
   <section class="page-body">
     <div class="container">
+      <NuclideChart />
+
       {researchItems.length === 0 ? (
         <p class="empty-state">No research areas yet.</p>
       ) : (
