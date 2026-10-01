@@ -1,5 +1,5 @@
 /**
- * Short dated updates rendered on the home page ("News" section).
+ * Short dated updates rendered at the top of the /news/ page.
  * List most recent first.
  */
 
@@ -25,11 +25,6 @@ export const news: NewsItem[] = [
       'Appointed Honorary Research Fellow at the University of Liverpool, continuing the doctoral work and the LBNL collaboration.',
   },
   {
-    date: '2025-08',
-    text:
-      'Finished a 12-month residency at the University of Jyväskylä under the STFC Long-Term Attachment Grant.',
-  },
-  {
     date: '2025-02',
     text:
       'Paper published in Communications Physics: "Direct Measurement of Three Different Deformations Near the Ground State in an Atomic Nucleus".',
@@ -38,5 +33,10 @@ export const news: NewsItem[] = [
     date: '2024-10',
     text:
       'Paper published in Physical Review Letters: "Toward the Discovery of New Elements: Production of Livermorium (Z=116) with $^{50}$Ti".',
+  },
+  {
+    date: '2024-08',
+    text:
+      'Finished a 10-month residency at the University of Jyväskylä under the STFC Long-Term Attachment Grant.',
   },
 ];

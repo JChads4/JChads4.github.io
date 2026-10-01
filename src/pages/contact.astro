@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import { site, email, activeSocials } from '../config';
 import { cv } from '../data/cv';
 import MathText from '../components/MathText.astro';
@@ -34,14 +35,14 @@ const bare = (url: string) =>
       <div class="contact-intro">
         {
           site.profileImage && (
-            <img
+            <Image
               class="contact-figure"
               src={site.profileImage}
               alt={`Portrait of ${site.name}`}
-              width="160"
-              height="213"
-              loading="lazy"
-              decoding="async"
+              width={160}
+              height={213}
+              densities={[1, 2]}
+              loading="eager"
             />
           )
         }

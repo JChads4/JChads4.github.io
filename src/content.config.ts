@@ -12,6 +12,9 @@ const publications = defineCollection({
     title: z.string(),
     /** Author list in citation order. Bold yourself by matching `site.name` in config.ts. */
     authors: z.array(z.string()).min(1),
+    /** The author list above is abridged: render a trailing "et al.". Use a
+     *  "…" entry to mark names left out between two listed authors. */
+    etAl: z.boolean().default(false),
     /** Journal, conference proceedings, or venue name. */
     venue: z.string(),
     year: z.number().int().min(1900).max(2100),

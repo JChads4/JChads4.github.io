@@ -32,25 +32,25 @@ const { subject = site.title, isHome = false } = Astro.props;
       <span class="masthead-subject">{subject}</span>
     </div>
 
-      {
-        activeSocials.length > 0 && (
-          <ul class="masthead-utility">
-            {activeSocials.map((s) => (
-              <li>
-                {/* A mailto: link wants no target, or the browser opens a
-                    blank tab beside the mail client. */}
-                <a
-                  href={s.url}
-                  {...(s.url.startsWith('http')
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                >
-                  {s.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )
-      }
+    {
+      activeSocials.length > 0 && (
+        <ul class="masthead-utility">
+          {activeSocials.map((s) => (
+            <li>
+              {/* A mailto: link wants no target, or the browser opens a
+                  blank tab beside the mail client. */}
+              <a
+                href={s.url}
+                {...(s.url.startsWith('http')
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
 </header>

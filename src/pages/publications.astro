@@ -3,6 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import IndexLabels from '../components/IndexLabels.astro';
 import PublicationCard from '../components/PublicationCard.astro';
 import { getCollection } from 'astro:content';
+import { activeSocials } from '../config';
+
+// Only point at a Scholar profile once config.ts has a real one.
+const scholar = activeSocials.find((s) => s.label === 'Google Scholar');
 
 const pubs = (await getCollection('publications')).sort(
   (a, b) =>
@@ -24,11 +28,18 @@ const years = [...new Set(pubs.map((p) => p.data.year))].sort(
       <h1>Publications</h1>
       <p>
         A complete list of journal articles, conference papers, and preprints.
-        Abstracts are available inline; the full list is also mirrored on my{" "}
-        <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer">
-          Google Scholar
-        </a>{" "}
-        profile.
+        Abstracts are available inline.
+        {
+          scholar && (
+            <>
+              The full list is also mirrored on my{' '}
+              <a href={scholar.url} target="_blank" rel="noopener noreferrer">
+                Google Scholar
+              </a>{' '}
+              profile.
+            </>
+          )
+        }
       </p>
     </div>
   </section>

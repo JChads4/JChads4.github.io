@@ -10,8 +10,15 @@ import { writeFileSync } from 'node:fs';
 const [url, w = '400', out = '.shots/shot.png'] = process.argv.slice(2);
 const port = 9223;
 
+// Set CHROME to the browser binary when it is not at the platform default.
+const chrome =
+  process.env.CHROME ??
+  (process.platform === 'darwin'
+    ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    : 'google-chrome');
+
 const proc = spawn(
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  chrome,
   [
     '--headless',
     '--disable-gpu',

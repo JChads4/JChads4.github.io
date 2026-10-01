@@ -2,6 +2,15 @@
 import Masthead from '../components/Masthead.astro';
 import Rail from '../components/Rail.astro';
 import Footer from '../components/Footer.astro';
+import { getImage } from 'astro:assets';
+// Libre Franklin, self-hosted at 300/400/600/800 plus 400 italic. Nothing in the
+// stylesheet asks for 500 or 700, because those would be synthesised rather
+// than loaded. Imported ahead of global.css so the cascade is unchanged.
+import '@fontsource/libre-franklin/300.css';
+import '@fontsource/libre-franklin/400.css';
+import '@fontsource/libre-franklin/400-italic.css';
+import '@fontsource/libre-franklin/600.css';
+import '@fontsource/libre-franklin/800.css';
 import '../styles/global.css';
 // KaTeX's own stylesheet, bundled by Vite so the maths fonts are self-hosted
 // rather than fetched from a CDN at runtime. Its import order matters: it must
@@ -9,6 +18,7 @@ import '../styles/global.css';
 // against KaTeX's glyph rules.
 import 'katex/dist/katex.min.css';
 import { site } from '../config';
+import { plainText } from '../lib/text';
 
 interface Props {
   title?: string;
@@ -20,6 +30,12 @@ interface Props {
   /** Keep the page out of search indexes. For the tag pages, which carry one
    *  post each while the blog is small, and for the 404. */
   noindex?: boolean;
+  /** Social-card image: a path under /public or an absolute URL. Defaults to
+   *  the portrait in config.ts. */
+  image?: string;
+  /** Publication date (`YYYY-MM-DD`) for a blog post. Marks the page as an
+   *  Open Graph article rather than a website. */
+  published?: string;
 }
 
 const {
@@ -27,14 +43,26 @@ const {
   description = site.description,
   subject,
   noindex = false,
+  image,
+  published,
 } = Astro.props;
-const pageTitle = title
-  ? `${title} — ${site.name}`
-  : `${site.name} — ${site.title}`;
+// Titles and descriptions may carry `$…$` maths, which a <title> or a meta tag
+// would show raw.
+const pageTitle = plainText(
+  title ? `${title} — ${site.name}` : `${site.name} — ${site.title}`
+);
+const metaDescription = plainText(description);
 
 // Absolute URL for canonical + Open Graph (falls back to config if `site` unset).
 const SITE_URL = Astro.site ?? new URL(site.url);
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+
+const ogImageSrc =
+  image ??
+  (site.profileImage
+    ? (await getImage({ src: site.profileImage, width: 600, format: 'jpg' })).src
+    : undefined);
+const ogImage = ogImageSrc ? new URL(ogImageSrc, SITE_URL).href : undefined;
 
 // On the home page the masthead name is the page's own h1; everywhere else it
 // is a link home and the page supplies its own h1.
@@ -48,26 +76,34 @@ const isHome = Astro.url.pathname === '/';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="description" content={metaDescription} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, follow" />
+      ) : (
+        <link rel="canonical" href={canonical} />
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
-
-    <!-- Libre Franklin, at 300/400/600/800. Nothing in the stylesheet asks for
-         500 or 700, because those would be synthesised rather than loaded. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap"
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.name} — blog`}
+      href={new URL('/rss.xml', SITE_URL).href}
     />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={published ? 'article' : 'website'} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {
+      published && (
+        <meta property="article:published_time" content={published} />
+      )
+    }
     <meta name="twitter:card" content="summary" />
   </head>
   <body>

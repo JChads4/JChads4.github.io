@@ -1,5 +1,5 @@
 /**
- * Talks — one entry per talk, for the front-page "Invited talks" block.
+ * Talks — one entry per talk, for the invited and contributed lists on /news/.
  *
  * The CV records presentations as two coarse rows ("Invited seminars",
  * "Contributed talks") whose `where` holds a semicolon-separated venue list and

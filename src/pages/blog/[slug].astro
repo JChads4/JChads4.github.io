@@ -23,7 +23,13 @@ const { title, date, excerpt, image, tags } = post.data;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={title} description={excerpt} subject={site.blogSubject}>
+<BaseLayout
+  title={title}
+  description={excerpt}
+  subject={site.blogSubject}
+  image={image}
+  published={date}
+>
   <article class="post">
     <!-- Not .page-head: that renders its h1 as a page label, which is wrong for
          a post title. A post is the one thing here meant to be read. -->

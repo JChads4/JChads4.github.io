@@ -5,6 +5,9 @@
  * collections) so pages stay free of hard-coded names and links.
  */
 
+import type { ImageMetadata } from 'astro';
+import profile from './assets/profile.jpg';
+
 export const site = {
   /** Full name, used in the masthead, footer, and page titles. */
   name: 'Jamie Chadderton',
@@ -30,8 +33,9 @@ export const site = {
     'Academic portfolio of Jamie Chadderton, PhD — experimental nuclear physics research, publications, and CV.',
   /** Deployed URL — keep in sync with astro.config.mjs `site`. */
   url: 'https://JChads4.github.io',
-  /** Path to a portrait shown on the contact page (lives in /public). */
-  profileImage: '/images/profile.jpg',
+  /** Portrait shown on the contact page and used as the default social-card
+   *  image. Imported, so Astro can resize it. Set to `undefined` to hide it. */
+  profileImage: profile as ImageMetadata | undefined,
   /** Optional link to a PDF of your CV (place the file in public/). Empty = hidden. */
   cvPdf: '',
 } as const;
@@ -77,15 +81,17 @@ export const socials: SocialLink[] = [
   },
   {
     label: 'Google Scholar',
-    url: 'https://scholar.google.com/citations?user=',
+    // e.g. 'https://scholar.google.com/citations?user=XXXXXXXXXXXX'
+    url: '',
   },
   {
     label: 'ORCID',
-    url: 'https://orcid.org/',
+    // e.g. 'https://orcid.org/0000-0000-0000-0000'
+    url: '',
   },
   {
     label: 'Email',
-    url: 'mailto:jamiechadderton8@gmail.com',
+    url: `mailto:${email.user}@${email.host}`,
   },
 ];
 

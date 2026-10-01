@@ -4,7 +4,9 @@ authors:
   - "E. Uusikylkä"
   - "P. Ruotsalainen"
   - "T. Grahn"
+  - "…"
   - "J. Chadderton"
+etAl: true
 venue: "European Physical Journal A"
 year: 2026
 type: journal

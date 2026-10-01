@@ -10,8 +10,18 @@ interface Props {
 }
 
 const { pub, showAbstract = false } = Astro.props;
-const { title, authors, venue, type, doi, arxiv, pdf, abstract, keywords } =
-  pub.data;
+const {
+  title,
+  authors,
+  etAl,
+  venue,
+  type,
+  doi,
+  arxiv,
+  pdf,
+  abstract,
+  keywords,
+} = pub.data;
 
 const typeLabel: Record<string, string> = {
   journal: 'Journal',
@@ -62,16 +72,16 @@ const titleUrl = pdf ?? arxivUrl ?? doiUrl;
     </h3>
 
     <p class="pub-authors">
-      {authors.map((author, i) => (
-        <>
-          {i > 0 && ', '}
-          {selfAuthorNames.includes(author) ? (
-            <span class="self">{author}</span>
-          ) : (
-            author
-          )}
-        </>
-      ))}
+      {/* Each name carries its own leading separator, on one line: a line
+          break between the name and the comma renders as a space before it. */}
+      {authors.map((author, i) => {
+        const sep = i > 0 ? ', ' : '';
+        return selfAuthorNames.includes(author) ? (
+          <>{sep}<span class="self">{author}</span></>
+        ) : (
+          `${sep}${author}`
+        );
+      })}{etAl && <>, <em>et al.</em></>}
     </p>
 
     <p class="pub-venue">{venue}</p>

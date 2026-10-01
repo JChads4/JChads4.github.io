@@ -19,6 +19,7 @@ Static output — fast, accessible, and deployable to GitHub Pages, Netlify, or 
 | `/projects/`        | Software and analysis projects                 |
 | `/cv/`              | Structured CV (positions, education, awards, …) |
 | `/contact/`         | Email, affiliation, and profile links          |
+| `/rss.xml`          | RSS feed of the blog (drafts excluded)         |
 | `/404.html`         | A miss offers the same links as the rail       |
 
 Nothing is lost from the older portfolio shape: teaching lives on `/cv/`, and
@@ -72,7 +73,7 @@ export const site = {
   location: '…',
   description: '…',            // <meta name="description"> fallback
   url: 'https://example.org',  // keep in sync with astro.config.mjs
-  profileImage: '/images/profile.jpg', // portrait on the contact page
+  profileImage: profile,       // imported from src/assets/; contact page + social card
   cvPdf: '',                   // set to '/cv.pdf' (place the file in public/) to show the button
 };
 
@@ -100,6 +101,7 @@ Add files to `src/content/publications/`. The filename becomes the entry id.
 ---
 title: "Your Paper Title"
 authors: ["Your Name", "Co-author"]
+etAl: false         # true appends "et al." to an abridged list; "…" marks a gap
 venue: "Journal / Conference"
 year: 2025
 type: journal        # journal | conference | workshop | preprint | thesis
@@ -246,6 +248,9 @@ node scripts/probe.mjs http://localhost:4322/cv/ 740 print
 node scripts/shot.mjs  http://localhost:4322/blog/ 400 .shots/blog-mobile.png
 ```
 
+Both scripts launch Google Chrome from its default macOS path, or
+`google-chrome` elsewhere; set `CHROME=/path/to/chrome` to use another binary.
+
 `probe.mjs` reports `overflow` (page-level horizontal scroll, which must be `0`),
 any element reaching past the viewport with no scrolling ancestor, the width of a
 prose block, and whether the rail is `sticky` or `static`. Write screenshots
@@ -274,6 +279,7 @@ src/
 │   ├── katex-math.mjs       # build-time maths rendering
 │   ├── blog.ts              # dates, hrefs, draft filtering, tags
 │   └── nav.ts               # the rail's link map, shared with the 404
+├── assets/profile.jpg       # portrait, resized at build time
 ├── config.ts                # site-wide identity (name, email, socials)
 ├── components/
 │   ├── Masthead.astro       # name, subject, utility links

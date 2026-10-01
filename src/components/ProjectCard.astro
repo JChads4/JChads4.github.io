@@ -42,9 +42,11 @@ const { title, tagline, summary, repoUrl, paperUrl, status, role, keywords } =
   </div>
 
   <div class="project-links col-3">
-    <a class="pub-link" href={repoUrl} target="_blank" rel="noopener noreferrer">
-      GitHub
-    </a>
+    {repoUrl && (
+      <a class="pub-link" href={repoUrl} target="_blank" rel="noopener noreferrer">
+        GitHub
+      </a>
+    )}
     {paperUrl && (
       <a
         class="pub-link"

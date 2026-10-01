@@ -6,7 +6,13 @@ import IndexLabels from '../../../components/IndexLabels.astro';
 import PostRow from '../../../components/PostRow.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../../../config';
-import { allTags, postsWithTag, tagSlug, visiblePosts } from '../../../lib/blog';
+import {
+  allTags,
+  postsWithTag,
+  tagHref,
+  tagSlug,
+  visiblePosts,
+} from '../../../lib/blog';
 
 // Drafts are excluded here as well as on the listing: a tag carried only by a
 // draft would otherwise generate a page that is empty in production.
@@ -59,7 +65,7 @@ const others = allTags(visiblePosts(await getCollection('blog'))).filter(
           <ul class="chip-row" aria-label="Other topics">
             {others.map((t) => (
               <li>
-                <a class="tag" href={`/blog/tag/${t.slug}/`}>
+                <a class="tag" href={tagHref(t.slug)}>
                   {t.tag} ({t.count})
                 </a>
               </li>

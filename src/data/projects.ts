@@ -13,8 +13,9 @@ export interface Project {
   tagline: string;
   /** 2–4 sentence summary of what the project does and why it exists. */
   summary: string;
-  /** Primary GitHub link (or external landing page). */
-  repoUrl: string;
+  /** Primary GitHub link (or external landing page). Omit when there is no
+   *  repository of the project's own. */
+  repoUrl?: string;
   /** Optional paper / preprint / write-up URL. */
   paperUrl?: string;
   /** Optional short note describing status (e.g. "Deployed at JYFL"). */
@@ -65,8 +66,8 @@ export const projects: Project[] = [
     summary:
       'Simulates the stochastic side-feeding and decay cascade of millions of nuclei down a ' +
       'rotational band, interfaces directly to NNDC BrIcc for internal conversion coefficients, ' +
-      'and overlays the resulting spectra on real experimental data. Used in the published work ' +
-      'on $^{254}$No and $^{250}$Fm ground-state and isomeric decays.',
+      'and overlays the resulting spectra on real experimental data. Used in the analysis of ' +
+      '$^{254}$No and $^{250}$Fm ground-state and isomeric decays.',
     repoUrl: 'https://github.com/JChads4/PATRON',
     status: 'Active',
     role: 'Author',
@@ -97,7 +98,6 @@ export const projects: Project[] = [
       'recoil-decay tagging and Geant4 detector-response modelling to characterize the ' +
       'ground-state band and the K-isomer in $^{250}$Fm. Includes the analysis tooling (EPIC, ' +
       'PATRON, Geant4 simulations) and the experimental campaigns at JYFL and LBNL.',
-    repoUrl: 'https://github.com/JChads4',
     status: 'Submitted Feb 2026',
     role: 'Author',
     keywords: ['$^{250}$Fm', 'SAGE', 'K-isomer', 'JYU / LBNL'],
