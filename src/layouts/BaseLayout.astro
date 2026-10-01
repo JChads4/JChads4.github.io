@@ -3,14 +3,21 @@ import Masthead from '../components/Masthead.astro';
 import Rail from '../components/Rail.astro';
 import Footer from '../components/Footer.astro';
 import { getImage } from 'astro:assets';
-// Libre Franklin, self-hosted at 300/400/600/800 plus 400 italic. Nothing in the
-// stylesheet asks for 500 or 700, because those would be synthesised rather
-// than loaded. Imported ahead of global.css so the cascade is unchanged.
-import '@fontsource/libre-franklin/300.css';
-import '@fontsource/libre-franklin/400.css';
-import '@fontsource/libre-franklin/400-italic.css';
-import '@fontsource/libre-franklin/600.css';
-import '@fontsource/libre-franklin/800.css';
+// Self-hosted type, imported ahead of global.css so the cascade is unchanged:
+// - Fraunces (variable, weight + SOFT axes) for display: the soft, rounded
+//   1970s serif that carries the retro half of the look.
+// - IBM Plex Sans for body copy, at the four weights the stylesheet uses.
+// - IBM Plex Mono for labels, dates and tags: the terminal half.
+// Weights not listed here would be synthesised and look blurred, so the
+// stylesheet asks for nothing else.
+import '@fontsource-variable/fraunces/soft.css';
+import '@fontsource-variable/fraunces/soft-italic.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/400-italic.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 // KaTeX's own stylesheet, bundled by Vite so the maths fonts are self-hosted
 // rather than fetched from a CDN at runtime. Its import order matters: it must
@@ -75,6 +82,7 @@ const isHome = Astro.url.pathname === '/';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#002676" />
     <title>{pageTitle}</title>
     <meta name="description" content={metaDescription} />
     {

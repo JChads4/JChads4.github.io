@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="3" fill="#222222"/>
-  <path d="M32 17 54 26.5 32 36 10 26.5z" fill="#ffffff"/>
-  <path d="M23.5 33v6.6c0 3.4 3.8 6.4 8.5 6.4s8.5-3 8.5-6.4V33L32 36.4z" fill="#ffffff"/>
+  <clipPath id="c"><rect width="64" height="64" rx="14"/></clipPath>
+  <g clip-path="url(#c)">
+    <rect width="64" height="64" fill="#002676"/>
+    <rect y="48" width="64" height="5" fill="#FDB515"/>
+    <rect y="55" width="64" height="2" fill="#FDB515"/>
+  </g>
+  <path d="M32 11 54 20.5 32 30 10 20.5z" fill="#FDB515"/>
+  <path d="M23.5 27v6.6c0 3.4 3.8 6.4 8.5 6.4s8.5-3 8.5-6.4V27L32 30.4z" fill="#FDB515"/>
 </svg>

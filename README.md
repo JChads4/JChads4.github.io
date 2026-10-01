@@ -28,16 +28,27 @@ talks (five of them previously reached no page at all).
 
 ## The design
 
-Structure comes from 1px rules and nothing else: square corners, no shadows, no
-cards. Links are underlined and the underline is never removed, because in a
-monochrome palette it does all the work of signalling a link. There is no colour
-accent and no dark mode, both deliberate.
+Modern retro, in UC Berkeley colours: **Berkeley Blue** (`#002676`) and
+**California Gold** (`#FDB515`) on warm cream paper. The masthead and footer
+are blue bands finished with a gold racing stripe; every listing sits in a
+rounded panel with a hard, unblurred offset shadow and a blue header band of
+column labels; labels, dates and tags are set in IBM Plex Mono; headings are
+Fraunces with its SOFT axis turned up, a 1970s display serif; body copy is
+IBM Plex Sans. All fonts are self-hosted through Fontsource.
+
+Gold is never used as text on cream (it is about 1.7:1). It is a fill, a
+stripe, a shadow, or text on blue, so every text pairing passes WCAG AA. Links
+are blue with a gold underline, and fill with gold on hover. There is no dark
+mode. Printing (the CV's PDF route) strips the colour, panels and shadows back
+to black on white.
 
 Two type scales share one token set, and the split is deliberate. `--fs-micro`
 through `--fs-ui` (11px to 14px) are for the dense regions: the rail, index
 rows, column labels and metadata. `--fs-body` with `--leading` is for long-form
 prose, which has to stay readable. `--measure` (44rem) caps prose while listings
-span the full column.
+span the full column. The brand colours are tokens at the top of
+`src/styles/global.css`; components only ever use the role tokens (`--accent`,
+`--highlight`, `--text-muted`, …), so a retheme is a change to that one block.
 
 There is **no client-side JavaScript**, with one exception: no `.js` file and no
 `<script>` element is emitted anywhere, and the single inline `onclick` is the

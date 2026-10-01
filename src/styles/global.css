@@ -1,77 +1,110 @@
 /* ==========================================================================
-   Academic portfolio — dense catalogue
+   Academic portfolio — modern retro, in Berkeley Blue and California Gold
 
-   The layout is a compact masthead over a two-column shell: a persistent left
-   rail of links, and a main column of dense index rows. Structure comes from
-   1px rules rather than cards or shadows, corners are square, and links are
-   underlined, so the underline does all the work of signalling a link. The
-   palette is monochrome by design, so nothing competes with the type.
+   The layout is unchanged from the dense catalogue it grew out of: a masthead
+   over a two-column shell, a persistent left rail of links, and a main column
+   of index rows. What changed is the surface. The page is printed on warm
+   cream stock; the masthead and footer are Berkeley Blue bands finished with a
+   gold racing stripe; every listing sits in a rounded panel with a hard,
+   unblurred offset shadow; labels, dates and tags are set in a monospace, as
+   on a terminal or a library card; and headings are set in Fraunces, a soft
+   1970s display serif.
+
+   Colour rules, because gold is a poor text colour on cream (about 1.7:1):
+   - Gold is only ever a fill, a stripe, a shadow, or text on blue.
+   - Text on cream is navy ink or Berkeley Blue, and always passes WCAG AA.
+   - Focus is a blue ring on light surfaces and a gold ring on blue ones.
 
    Two type scales share one token set. `--fs-micro` through `--fs-ui` are for
    the dense regions (rail, index rows, column labels, metadata); `--fs-body`
-   with `--leading` is for long-form prose, which has to stay readable. Never
-   mix the two.
+   with `--leading` is for long-form prose, which has to stay readable.
 
-   The print block is the last section here, deliberately. It used to sit
-   before three later sections, where a rule of equal specificity could
-   silently beat it. The CV prints to PDF through it.
+   The print block is the last section here, deliberately: a rule of equal
+   specificity after it would silently win. The CV prints to PDF through it,
+   and it strips the colour back to black on white.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. Design tokens
    -------------------------------------------------------------------------- */
 :root {
-  /* palette — greys only. Every colour in this file is a token, so the print
-     block can retheme the page by redefining them and nothing else. */
-  --bg: #ffffff;
-  --bg-soft: #fafafa;
-  --surface: #ffffff;
-  --text: #333333;
-  --text-muted: #666666;
-  --text-faint: #767676;
-  --border: #eeeeee;
-  --border-strong: #dddddd;
-  --accent: #222222;
-  --accent-strong: #000000;
-  --on-accent: #ffffff;
-  --link: #222222;
-  --link-hover: #767676;
-  --code-bg: #fafafa;
-  --focus-ring: #222222;
+  /* UC Berkeley brand colours. */
+  --berkeley-blue: #002676;
+  --berkeley-blue-dark: #010133;
+  --california-gold: #fdb515;
+  --gold-dark: #c4820e; /* Medalist: gold that must sit on cream, as a rule */
+  --founders-rock: #3b7ea1;
+
+  /* The palette, as roles. Every colour in this file is one of these, so the
+     print block can retheme the page by redefining them and nothing else. */
+  --bg: #fbf6ea; /* cream paper */
+  --bg-soft: #f4ebd3; /* a shade darker: hover rows, chips, code */
+  --surface: #fffdf7; /* the panels */
+  --text: #141a3c; /* navy ink, 15:1 on --bg */
+  --text-muted: #3d4366; /* 9:1 */
+  --text-faint: #5b6080; /* 5.7:1 */
+  --border: #e3d7b8; /* warm hairline between rows */
+  --border-strong: var(--berkeley-blue);
+  --accent: var(--berkeley-blue);
+  --accent-strong: var(--berkeley-blue-dark);
+  --on-accent: #fbf6ea;
+  --highlight: var(--california-gold);
+  --on-highlight: var(--berkeley-blue-dark);
+  --link: var(--berkeley-blue);
+  --link-hover: var(--berkeley-blue-dark);
+  --code-bg: var(--bg-soft);
+  --focus-ring: var(--berkeley-blue);
+  --shadow-color: var(--berkeley-blue);
 
   /* type */
-  --font-sans: 'Libre Franklin', 'Helvetica Neue', helvetica, arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
-    'Liberation Mono', monospace;
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', georgia, serif;
+  --font-sans: 'IBM Plex Sans', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
 
-  /* Libre Franklin is loaded at 300/400/600/800 only. Anything else (500, 700)
-     is synthesised by the browser and looks blurred beside a real weight. */
-  --fs-micro: 0.6875rem; /* 11px — uppercase column and group labels */
+  /* Plex Sans is loaded at 400/500/600 (+400 italic), Plex Mono at 400/500.
+     Fraunces is variable, so any weight is real. */
+  --fs-micro: 0.6875rem; /* 11px — mono column and group labels */
   --fs-xs: 0.75rem; /* 12px — chips, footer note */
   --fs-sm: 0.8125rem; /* 13px — rail links, dates, metadata */
   --fs-ui: 0.875rem; /* 14px — dense copy, excerpts, buttons */
   --fs-body: 1rem; /* 16px — prose */
   --fs-h2: 1.125rem; /* 18px — index and entry headings */
-  --fs-h1: 1.5rem; /* 24px — page titles */
-  --fs-display: clamp(1.5rem, 3vw, 2rem); /* post titles */
+  --fs-h1: clamp(1.875rem, 4vw, 2.625rem); /* page titles */
+  --fs-display: clamp(2rem, 5vw, 3.125rem); /* post titles */
 
-  --leading: 1.6; /* prose only */
-  --leading-ui: 1.35; /* every dense region */
+  --leading: 1.65; /* prose only */
+  --leading-ui: 1.4; /* every dense region */
 
   /* layout */
   --shell: 75rem; /* 1200px — the page column */
-  --rail: 15rem; /* 240px — rail links plus the gutter to their rule */
+  --rail: 14rem;
   --rail-gap: 2.5rem;
   --measure: 44rem; /* 704px — long-form prose, so lines stay readable */
   --gutter: clamp(1rem, 3vw, 2rem);
 
-  /* geometry. Square corners and no shadows: the rules carry the structure. */
-  --radius: 0;
-  --rule: 1px solid var(--border);
-  --rule-strong: 1px solid var(--border-strong);
+  /* geometry: rounded panels, pill badges, and hard offset shadows */
+  --radius: 12px;
+  --radius-sm: 6px;
+  --pill: 999px;
+  --rule: 1px dashed var(--border);
+  --rule-strong: 2px solid var(--border-strong);
+  --panel-border: 2px solid var(--border-strong);
+  --shadow: 5px 5px 0 var(--shadow-color);
+  --shadow-sm: 3px 3px 0 var(--shadow-color);
+
+  /* The racing stripe under the masthead and over the footer. */
+  --stripe: linear-gradient(
+    to bottom,
+    var(--california-gold) 0 5px,
+    transparent 5px 8px,
+    var(--california-gold) 8px 10px,
+    transparent 10px
+  );
 
   /* density — the vertical padding of one index row */
-  --row-pad: 0.5rem;
+  --row-pad: 0.7rem;
+  --row-inset: 1rem; /* horizontal padding inside a panel */
 }
 
 /* --------------------------------------------------------------------------
@@ -100,8 +133,25 @@ body {
   line-height: var(--leading);
   color: var(--text);
   background-color: var(--bg);
+  /* A faint halftone, so the cream reads as paper rather than as a flat fill.
+     Dots of the ink colour at 4% opacity; nothing here carries meaning. */
+  background-image: radial-gradient(
+    rgb(0 38 118 / 0.045) 1px,
+    transparent 1.2px
+  );
+  background-size: 14px 14px;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* A column that fills the window, so on a short page the blue footer band
+     sits at the bottom of the screen rather than above a strip of cream. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+body > .layout {
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 img,
@@ -144,17 +194,26 @@ h3,
 h4,
 h5,
 h6 {
-  line-height: 1.3;
+  line-height: 1.25;
   text-wrap: balance;
   overflow-wrap: break-word;
+  color: var(--accent-strong);
 }
 
-/* A catalogue labels rather than shouts, so the display sizes carry weight 600
-   rather than the light 300 the previous theme used. Only the post title keeps
-   a display size, because a post is the one thing here meant to be read. */
+/* Page titles and section headings are Fraunces with the SOFT axis turned
+   all the way up: the rounded terminals are most of the retro effect. */
+h1,
+.year-heading,
+.cv-section h2,
+.post-body h2 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  letter-spacing: -0.01em;
+}
 h1 {
   font-size: var(--fs-h1);
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--accent);
 }
 h2 {
   font-size: var(--fs-h2);
@@ -169,17 +228,17 @@ h4 {
   font-weight: 600;
 }
 
-/* The uppercase micro label, used for rail groups and column headers. */
+/* The mono micro label, used for rail groups, column headers and badges. */
 h5,
 .rail-label,
 .index-labels,
 .pub-type,
 .status,
-.year-heading,
-.cv-section h2 {
+.contact-dt {
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-faint);
 }
@@ -191,34 +250,42 @@ p {
 /* --------------------------------------------------------------------------
    4. Links, focus, selection, code
    -------------------------------------------------------------------------- */
-/* No colour accent, so the underline does all the work of signalling a link.
-   Keep it, and never remove it on hover. */
+/* Links are blue with a gold underline. The underline stays (the blue alone is
+   not enough to tell a link from navy text), and hover fills the word with a
+   gold highlighter. */
 a {
   color: var(--link);
   text-decoration: underline;
+  text-decoration-color: var(--california-gold);
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
+  border-radius: 2px;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    text-decoration-color 120ms ease;
 }
 a:hover {
-  color: var(--link-hover);
-  text-decoration-thickness: 2px;
+  color: var(--on-highlight);
+  background-color: var(--highlight);
+  text-decoration-color: var(--on-highlight);
 }
 /* Inside a dense row the offset has to be tighter or descenders clip the rule
    below. */
-.rail-link,
 .index-title a,
 .footer-links a {
   text-underline-offset: 2px;
 }
 a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--focus-ring);
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--highlight);
+  color: var(--on-highlight);
 }
 
 code,
@@ -230,14 +297,16 @@ pre {
 code {
   background: var(--code-bg);
   padding: 0.12em 0.35em;
+  border-radius: 4px;
 }
 /* The rule above is for inline code, but it also matches the `code` inside a
-   highlighted block, where the padding and the grey slab sit on top of the
-   panel's own background and padding. Inside a `pre`, Shiki has already done
-   the work, so reset both. */
+   highlighted block, where the padding and the slab sit on top of the panel's
+   own background and padding. Inside a `pre`, Shiki has already done the
+   work, so reset both. */
 pre code {
   background: none;
   padding: 0;
+  border-radius: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -292,31 +361,42 @@ main .container {
   color: var(--text-muted);
 }
 
-/* The home page's identity strip: who writes this on the left, what the blog is
-   about on the right. One line each, so the index starts near the top of the
-   page. */
+/* The home page's identity strip, as a gold ticket: who writes this on the
+   left, what the blog is about on the right. Short, so the index still starts
+   near the top of the page. */
 .identity {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
   column-gap: clamp(1.5rem, 5vw, 3rem);
   row-gap: 0.5rem;
-  padding-block: 1rem;
-  border-bottom: var(--rule-strong);
+  margin-block: 1.75rem 2rem;
+  padding: 1rem 1.25rem;
+  color: var(--on-highlight);
+  background: var(--highlight);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 .identity-who {
   font-size: var(--fs-ui);
   line-height: var(--leading-ui);
-  color: var(--text-muted);
   max-width: none;
 }
 .identity-who strong {
-  color: var(--text);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 .identity-what {
-  font-size: var(--fs-ui);
-  line-height: var(--leading-ui);
-  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.3;
   max-width: var(--measure);
 }
 @media screen and (max-width: 47.99em) {
@@ -330,17 +410,20 @@ main .container {
    width of its own, because each supplies its own `.container`. The reset sets
    every margin to zero, so the vertical rhythm has to be declared here. */
 .page-head {
-  padding-block: 1rem 0.5rem;
+  padding-block: 1.75rem 1.25rem;
+}
+.page-head p {
+  color: var(--text-muted);
 }
 .page-head h1 + p {
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
 }
 /* Only the CV uses this: it puts the print button on the same line as the
    title, where the other pages have nothing to put beside it. */
 .page-head-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem 1.5rem;
 }
@@ -350,56 +433,99 @@ main .container {
 
 /* --------------------------------------------------------------------------
    6. Masthead
-   A compact two-row strip: the name and what the site is about, then the
-   utility links. It replaces the full-bleed banner entirely, which is the
-   single largest reason the old page read as a brochure rather than a
-   catalogue.
+   A Berkeley Blue band with the name in Fraunces, the page's subject in gold
+   mono, and the utility links. A gold racing stripe finishes the lower edge.
    -------------------------------------------------------------------------- */
 .masthead {
-  border-bottom: var(--rule-strong);
-  background: var(--bg);
+  color: var(--on-accent);
+  background-color: var(--accent);
+  /* Two layers: a gold halftone, and over it a wash of the band's own blue
+     that fades out rightwards, so the dots never sit under the name. Both are
+     decorative, and go in print with the rest of the masthead. The stripe in
+     ::after paints its own cream background over the bottom 10px. */
+  background-image:
+    linear-gradient(to right, var(--accent) 35%, rgb(0 38 118 / 0) 100%),
+    radial-gradient(rgb(253 181 21 / 0.22) 1.2px, transparent 1.6px);
+  background-size:
+    100% 100%,
+    12px 12px;
+  background-position: right top;
+}
+.masthead::after {
+  content: '';
+  display: block;
+  height: 10px;
+  background: var(--stripe);
+  background-color: var(--bg);
 }
 .masthead-inner {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 0.25rem 2rem;
-  padding-block: 0.75rem;
+  gap: 0.5rem 2rem;
+  padding-block: 1.1rem 1rem;
 }
 .masthead-name {
-  font-size: var(--fs-body);
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: clamp(1.5rem, 3.2vw, 2.125rem);
   font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--on-accent);
 }
 /* On the home page the name is the page's h1 and is not a link: it is the
    current page, and the skip link already covers navigation. */
 h1.masthead-name {
-  font-size: var(--fs-body);
+  font-size: clamp(1.5rem, 3.2vw, 2.125rem);
+  color: var(--on-accent);
 }
 .masthead-name a {
+  color: inherit;
   text-decoration: none;
 }
 .masthead-name a:hover {
-  text-decoration: underline;
+  color: var(--california-gold);
+  background: none;
 }
 .masthead-subject {
   display: block;
-  margin-top: 0.15rem;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--california-gold);
 }
 .masthead-utility {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1rem;
+  gap: 0.4rem;
   list-style: none;
   padding: 0;
-  font-size: var(--fs-sm);
-  line-height: var(--leading-ui);
   margin-left: auto;
+}
+/* The utility links are pills on the band: cream outline, gold when hovered. */
+.masthead-utility a {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--leading-ui);
+  color: var(--on-accent);
+  text-decoration: none;
+  border: 1.5px solid rgb(251 246 234 / 0.6);
+  border-radius: var(--pill);
+}
+.masthead-utility a:hover {
+  color: var(--on-highlight);
+  background: var(--highlight);
+  border-color: var(--highlight);
+}
+/* A blue ring vanishes on the blue band. */
+.masthead a:focus-visible,
+.site-footer a:focus-visible {
+  outline-color: var(--california-gold);
 }
 
 /* --------------------------------------------------------------------------
@@ -409,32 +535,76 @@ h1.masthead-name {
    widget and no JavaScript, so nothing is hidden behind a control that needs
    scripting to open.
    -------------------------------------------------------------------------- */
-.rail-group + .rail-group {
-  margin-top: 0.15rem;
+.rail-label {
+  color: var(--accent);
+}
+/* A small gold square before each group label, like a bullet on a ledger. */
+.rail-label::before {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-right: 0.5em;
+  background: var(--california-gold);
+  border: 1.5px solid var(--accent);
+  vertical-align: 0.02em;
 }
 .rail-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.1rem 0.85rem;
+  gap: 0.25rem 0.35rem;
   list-style: none;
   padding: 0;
 }
 
+/* Rail links are pills rather than underlined text: the rail is plainly
+   navigation, so it does not need the underline to say so, and a filled pill
+   marks the current page more clearly than weight alone. */
+.rail-link {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  font-size: var(--fs-sm);
+  line-height: var(--leading-ui);
+  color: var(--text);
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  border-radius: var(--pill);
+}
+.rail-link:hover {
+  color: var(--accent-strong);
+  background: var(--bg-soft);
+  border-color: var(--accent);
+}
+.rail-link.active {
+  font-weight: 600;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+/* There is deliberately no Home link: on / the masthead name is the way home,
+   and marking it current would say nothing a reader does not already know. */
+.rail-link[aria-current='page'] {
+  font-weight: 600;
+  color: var(--on-highlight);
+  background: var(--highlight);
+  border-color: var(--accent);
+  box-shadow: 2px 2px 0 var(--shadow-color);
+}
+
 @media screen and (max-width: 59.99em) {
   .rail {
-    border-bottom: var(--rule);
+    border-bottom: var(--rule-strong);
   }
   .rail-nav {
-    padding-block: 0.6rem;
+    padding-block: 0.85rem;
   }
   .rail-group {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.1rem 0.9rem;
+    gap: 0.25rem 0.75rem;
   }
   .rail-group + .rail-group {
-    margin-top: 0.1rem;
+    margin-top: 0.4rem;
   }
   .rail-label {
     flex: 0 0 auto;
@@ -443,18 +613,9 @@ h1.masthead-name {
     flex: 1 1 auto;
     min-width: 0;
   }
-  .rail-link.active {
-    font-weight: 600;
-  }
 }
 
 @media screen and (min-width: 60em) {
-  /* The rule belongs to the rail's box rather than to the sticky element, so
-     it stretches to the full height of the column. */
-  .rail {
-    padding-right: var(--rail-gap);
-    border-right: var(--rule);
-  }
   .rail-nav {
     position: sticky;
     top: 0;
@@ -463,52 +624,39 @@ h1.masthead-name {
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    padding-block: 1.25rem 2rem;
+    padding-block: 1.75rem 2rem;
   }
   .rail-group + .rail-group {
-    margin-top: 1.25rem;
+    margin-top: 1.5rem;
   }
   .rail-list {
     display: block;
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
+  }
+  .rail-list li + li {
+    margin-top: 0.2rem;
   }
   .rail-link {
     display: block;
-    padding-block: 0.15rem;
   }
-  .rail-link.active {
-    font-weight: 600;
-    color: var(--accent-strong);
-  }
-}
-
-/* No `text-decoration-color` override: the underline is the only signal that a
-   rail entry is a link, so it takes the text colour. A `--border-strong` rule
-   under `--text` is a 1px line at #ddd, which reads as a rule rather than as a
-   link. */
-.rail-link {
-  font-size: var(--fs-sm);
-  line-height: var(--leading-ui);
-}
-/* There is deliberately no Home link: on / the masthead name is the way home,
-   and marking it current would say nothing a reader does not already know. */
-.rail-link[aria-current='page'] {
-  color: var(--accent-strong);
-  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
    8. Dense index — the shared catalogue grammar
-   Every listing on the site is an `.index-block`: a row of micro uppercase
-   column labels over rows of `--row-pad` height, separated by 1px rules. The
-   modifier sets that listing's column widths, and both the labels and the rows
-   read from it, so the two cannot drift apart.
+   Every listing on the site is an `.index-block`: a rounded panel with a hard
+   offset shadow, a blue header band of mono column labels, and rows separated
+   by dashed hairlines. The modifier sets that listing's column widths, and
+   both the labels and the rows read from it, so the two cannot drift apart.
    -------------------------------------------------------------------------- */
 .index-block {
-  --cols: 6rem minmax(0, 1fr) 12rem;
+  --cols: 6.5rem minmax(0, 1fr) 12rem;
+  background: var(--surface);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 .index-block--pub {
-  --cols: 6rem minmax(0, 1fr) 9rem;
+  --cols: 6.5rem minmax(0, 1fr) 9rem;
 }
 .index-block--research {
   --cols: 4.5rem minmax(0, 1fr) 7rem;
@@ -517,10 +665,10 @@ h1.masthead-name {
   --cols: 10rem minmax(0, 1fr) 9rem;
 }
 .index-block--news {
-  --cols: 6rem minmax(0, 1fr);
+  --cols: 6.5rem minmax(0, 1fr);
 }
 .index-block--talk {
-  --cols: 6rem minmax(0, 1fr);
+  --cols: 6.5rem minmax(0, 1fr);
 }
 /* A single-column index: the link list on the 404. Every other index entry is
    a document with a title worth 18px; these are the same links the rail
@@ -541,21 +689,37 @@ h1.masthead-name {
   display: grid;
   grid-template-columns: var(--cols);
   column-gap: 1.25rem;
+  padding-inline: var(--row-inset);
 }
 .index-labels {
-  padding-bottom: 0.35rem;
-  border-bottom: var(--rule-strong);
+  max-width: none;
+  padding-block: 0.5rem;
+  color: var(--on-accent);
+  background: var(--accent);
+  /* The panel's radius minus its border, so the band meets the corner. */
+  border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
 }
 .index-row {
   align-items: baseline;
   padding-block: var(--row-pad);
   border-bottom: var(--rule);
+  transition: background-color 120ms ease;
 }
 .index-row:last-child {
   border-bottom: none;
 }
 .index-row:hover {
   background: var(--bg-soft);
+}
+/* The hover fill would square off the panel's rounded corners. */
+.index-row:first-child:hover {
+  border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+}
+.index-labels + .index .index-row:first-child:hover {
+  border-radius: 0;
+}
+.index-row:last-child:hover {
+  border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px);
 }
 .index-row > .col-1 {
   grid-column: 1;
@@ -568,20 +732,18 @@ h1.masthead-name {
 }
 
 .index-date {
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-faint);
   white-space: nowrap;
 }
-/* Titles come down from 600 to 400. In a catalogue the hierarchy comes from
-   the small uppercase labels, not from bolding the entries, and the underline
-   carries the link. */
 .index-title {
   font-size: var(--fs-h2);
-  font-weight: 400;
+  font-weight: 600;
   line-height: var(--leading-ui);
 }
 .index-excerpt {
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
   font-size: var(--fs-ui);
   color: var(--text-muted);
   line-height: var(--leading-ui);
@@ -590,21 +752,30 @@ h1.masthead-name {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.15rem 0.75rem;
+  gap: 0.35rem;
   list-style: none;
   padding: 0;
 }
 
-/* `.tag` is a blog tag and links to its tag page. `.chip` (section 9) is a
-   keyword and is not a link, because only blog posts define tags. */
+/* `.tag` is a blog tag and links to its tag page: an outlined blue pill. `.chip`
+   (section 9) is a keyword and is not a link, so it is a flat fill with no
+   outline, which is how the two stay distinguishable. */
 .tag {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--pill);
 }
 .tag:hover {
-  color: var(--text);
+  color: var(--on-highlight);
+  background: var(--highlight);
 }
 
 /* Below the row breakpoint the columns stack: date and tags on the first line,
@@ -615,8 +786,8 @@ h1.masthead-name {
   }
   .index-row {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.15rem;
-    padding-block: 0.7rem;
+    row-gap: 0.3rem;
+    padding-block: 0.85rem;
   }
   .index-row > .col-1,
   .index-row > .col-2,
@@ -627,42 +798,75 @@ h1.masthead-name {
     order: -1;
     justify-content: flex-start;
   }
+  /* With the label band hidden the first row is the panel's top edge again. */
+  .index-labels + .index .index-row:first-child:hover {
+    border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+  }
 }
 
 /* A year or group heading follows whatever came before it: a chip row on
-   /blog/, one index block above another on /news/ and /publications/. The
-   margin lives on the heading rather than on a sibling rule so all three cases
-   get the same gap from one declaration. */
+   /blog/, one index block above another on /news/ and /publications/. Set in
+   Fraunces italic, with a short gold bar beneath, so it reads as a chapter
+   mark rather than as another row. */
+.year-heading,
+.cv-section h2 {
+  position: relative;
+  padding-bottom: 0.45rem;
+  margin-bottom: 1rem;
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--accent);
+}
+.year-heading::after,
+.cv-section h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 3.5rem;
+  height: 5px;
+  background: var(--california-gold);
+  border-radius: var(--pill);
+}
 .year-heading {
-  margin-top: 1.75rem;
-  padding-bottom: 0.35rem;
-  border-bottom: var(--rule-strong);
+  margin-top: 2.25rem;
+}
+/* The first group on a page sits straight under the page head. */
+.page-body .container > .year-group:first-child .year-heading,
+.page-body .container > .year-heading:first-child {
+  margin-top: 0.5rem;
 }
 
 /* --------------------------------------------------------------------------
    9. Publications
    -------------------------------------------------------------------------- */
 /* The left column carries the type, not the year. The page already groups by
-   year under a `.year-heading`, so a year column repeated the heading one
-   column to the right of it; the type is the one thing the heading does not
-   say. */
+   year under a `.year-heading`, so a year column would repeat the heading; the
+   type is the one thing the heading does not say. */
+.pub-type {
+  color: var(--accent);
+}
 .pub-title {
   font-size: var(--fs-h2);
-  font-weight: 400;
+  font-weight: 600;
   line-height: var(--leading-ui);
 }
 .pub-authors {
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
   font-size: var(--fs-ui);
   color: var(--text-muted);
   line-height: var(--leading-ui);
 }
+/* Your own name: blue, bold, on a gold underline, so it can be found in a
+   long author list at a glance. */
 .pub-authors .self {
-  color: var(--text);
+  color: var(--accent);
   font-weight: 600;
+  box-shadow: inset 0 -0.35em 0 rgb(253 181 21 / 0.55);
 }
 .pub-venue {
-  margin-top: 0.1rem;
+  margin-top: 0.15rem;
   font-size: var(--fs-sm);
   color: var(--text-faint);
   font-style: italic;
@@ -671,67 +875,119 @@ h1.masthead-name {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.15rem 0.85rem;
+  align-items: flex-start;
+  gap: 0.35rem;
 }
+/* Outbound links (DOI, arXiv, PDF, GitHub) as small chunky buttons. */
 .pub-link {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--link);
+  color: var(--accent);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: 2px 2px 0 var(--shadow-color);
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    background-color 100ms ease;
 }
 .pub-link:hover {
-  color: var(--text);
+  color: var(--on-highlight);
+  background: var(--highlight);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--shadow-color);
+}
+.pub-link:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--shadow-color);
 }
 
 details.abstract {
-  margin-top: 0.35rem;
+  margin-top: 0.45rem;
 }
 details.abstract summary {
+  display: inline-block;
   cursor: pointer;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--accent);
   user-select: none;
 }
+details.abstract summary::before {
+  content: '+ ';
+}
+details.abstract[open] summary::before {
+  content: '− ';
+}
+details.abstract summary::-webkit-details-marker {
+  display: none;
+}
 details.abstract summary:hover {
-  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--california-gold);
+  text-decoration-thickness: 2px;
 }
 details.abstract p {
-  margin-top: 0.4rem;
+  margin-top: 0.45rem;
+  padding-left: 0.85rem;
   font-size: var(--fs-ui);
   color: var(--text-muted);
   line-height: var(--leading);
+  border-left: 3px solid var(--california-gold);
 }
 
-/* Keywords: not links, so they carry no underline and no page of their own. */
+/* Keywords: not links, so no outline, no underline and no page of their own. */
 .chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.15rem 0.75rem;
+  gap: 0.35rem;
   list-style: none;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
   padding: 0;
 }
 .chip {
+  padding: 0.05rem 0.55rem;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--bg-soft);
+  border-radius: var(--pill);
+}
+/* On /blog/ and the tag pages the chip row holds tag links instead, above or
+   below a panel, so it needs room from the panel's shadow. */
+.page-body .chip-row:has(.tag) {
+  margin-block: 0 1.5rem;
+}
+.page-body .index-block + .chip-row:has(.tag) {
+  margin-top: 1.75rem;
 }
 
-/* The two-column label/value list used by the contact page. `dt`/`dd` groups
-   live in a `div` row, which is what HTML5 allows inside a `dl`. */
+/* The two-column label/value list used by the contact page, in a panel like
+   every other listing. `dt`/`dd` groups live in a `div` row, which is what
+   HTML5 allows inside a `dl`. */
 .contact-list {
   padding: 0;
+  background: var(--surface);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 .contact-row {
   display: grid;
   grid-template-columns: 8rem minmax(0, 1fr);
   column-gap: 1.25rem;
   align-items: baseline;
-  padding-block: var(--row-pad);
+  padding: var(--row-pad) var(--row-inset);
   border-bottom: var(--rule);
 }
 .contact-row:last-child {
@@ -740,16 +996,12 @@ details.abstract p {
 @media screen and (max-width: 47.99em) {
   .contact-row {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.1rem;
-    padding-block: 0.6rem;
+    row-gap: 0.15rem;
+    padding-block: 0.7rem;
   }
 }
 .contact-dt {
-  font-size: var(--fs-micro);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--accent);
 }
 .contact-dd {
   font-size: var(--fs-ui);
@@ -759,7 +1011,7 @@ details.abstract p {
   font-weight: 600;
 }
 .contact-note {
-  margin-top: 1.25rem;
+  margin-top: 1.75rem;
   font-size: var(--fs-ui);
   color: var(--text-muted);
 }
@@ -768,43 +1020,46 @@ details.abstract p {
    10. Research
    -------------------------------------------------------------------------- */
 .research-since {
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-faint);
 }
 .research-title {
   font-size: var(--fs-h2);
-  font-weight: 400;
+  font-weight: 600;
   line-height: var(--leading-ui);
 }
 .research-meta {
   display: flex;
   justify-content: flex-end;
 }
-/* The three states separate by weight of fill rather than hue, because this
-   palette has no colour accent to spend on them.
+/* Badges. The three research states separate by fill: gold for live work,
+   solid blue for finished, an outline for planned.
    The class suffixes are built from the `research.status` enum in
    ResearchCard.astro, so these three names are load-bearing: rename one here
    and that status silently renders unstyled, with no build error. */
 .status {
   display: inline-block;
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.55rem;
   white-space: nowrap;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--pill);
 }
 .status-active {
+  color: var(--on-highlight);
+  background: var(--highlight);
+}
+.status-completed {
   color: var(--on-accent);
   background: var(--accent);
 }
-.status-completed {
-  color: var(--text-muted);
-  background: var(--bg-soft);
-}
 .status-planned {
-  color: var(--text-muted);
-  background: var(--bg);
-  border: var(--rule-strong);
+  color: var(--accent);
+  background: var(--surface);
+  border-style: dashed;
 }
 .research-body {
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
   color: var(--text-muted);
   font-size: var(--fs-body);
   line-height: var(--leading);
@@ -818,30 +1073,28 @@ details.abstract p {
 
 /* --------------------------------------------------------------------------
    11. Projects
-   Same rule-separated rows as every other listing: the bordered card this used
-   to be was the one place the site stopped reading as a catalogue.
    -------------------------------------------------------------------------- */
 /* The project status is a free-form string, not the research enum, so it takes
    one treatment: an outlined pill. The shape and the column position are what
    make /projects and /research read as the same table. */
 .status-note {
-  color: var(--text-muted);
-  background: var(--bg);
-  border: var(--rule-strong);
+  color: var(--accent);
+  background: var(--surface);
+  white-space: normal;
 }
 .project-title {
   font-size: var(--fs-h2);
-  font-weight: 400;
+  font-weight: 600;
   line-height: var(--leading-ui);
 }
 .project-tagline {
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
   font-size: var(--fs-ui);
   color: var(--text-muted);
   line-height: var(--leading-ui);
 }
 .project-summary {
-  margin-top: 0.35rem;
+  margin-top: 0.45rem;
   font-size: var(--fs-body);
   line-height: var(--leading);
 }
@@ -849,26 +1102,41 @@ details.abstract p {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.15rem 0.85rem;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
 }
 .project-role {
+  flex-basis: 100%;
+  text-align: right;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-faint);
+}
+@media screen and (max-width: 47.99em) {
+  .project-role {
+    flex-basis: auto;
+    text-align: left;
+  }
 }
 
 /* --------------------------------------------------------------------------
    12. CV
    `.cv-section`, `.cv-entry-title` and `.pub-title` are named by the print
    block at the foot of this file, so they have to survive any restyle here.
+   The section headings share the Fraunces chapter mark with `.year-heading`
+   (section 8); the entries stay as plain ruled rows, because the CV is also a
+   printed document.
    -------------------------------------------------------------------------- */
 .cv-section {
-  margin-top: 2rem;
+  margin-top: 2.25rem;
+}
+.cv-section:first-child {
+  margin-top: 0.5rem;
 }
 .cv-section h2 {
-  padding-bottom: 0.35rem;
-  border-bottom: var(--rule-strong);
+  margin-bottom: 0.5rem;
 }
 .cv-entry {
   padding-block: var(--row-pad);
@@ -884,20 +1152,26 @@ details.abstract p {
   align-items: baseline;
 }
 .cv-entry-title {
-  font-size: var(--fs-ui);
+  font-size: var(--fs-body);
   font-weight: 600;
+  color: var(--accent-strong);
 }
 .cv-entry-where {
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
 .cv-entry-date {
-  color: var(--text-faint);
-  font-size: var(--fs-sm);
+  flex: 0 0 auto;
+  padding: 0.05rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
   white-space: nowrap;
+  background: var(--bg-soft);
+  border-radius: var(--pill);
 }
 .cv-entry-detail {
-  margin-top: 0.1rem;
+  margin-top: 0.2rem;
   font-size: var(--fs-sm);
   color: var(--text-muted);
   line-height: var(--leading);
@@ -905,33 +1179,40 @@ details.abstract p {
 .skills-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1rem;
+  gap: 0.4rem;
   list-style: none;
   padding: 0;
 }
 .skill {
-  font-size: var(--fs-micro);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
+  padding: 0.1rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--pill);
 }
 
 /* --------------------------------------------------------------------------
    13. Contact
    -------------------------------------------------------------------------- */
+/* The portrait as a snapshot: blue frame, gold offset shadow, a slight tilt. */
 .contact-figure {
   width: clamp(120px, 20vw, 160px);
   height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  border: var(--rule);
+  border: 3px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--california-gold);
+  transform: rotate(-2deg);
 }
 .contact-intro {
   display: flex;
   align-items: flex-start;
-  gap: clamp(1.25rem, 4vw, 2.5rem);
+  gap: clamp(1.5rem, 4vw, 2.75rem);
   flex-wrap: wrap;
-  margin-bottom: 1.25rem;
+  margin-block: 0.5rem 2rem;
 }
 .contact-intro p {
   flex: 1 1 22rem;
@@ -942,24 +1223,26 @@ details.abstract p {
    14. Blog
    -------------------------------------------------------------------------- */
 /* Post header. Deliberately not `.page-head`: a post title is the one thing on
-   the site meant to be read, so it takes the display size rather than the page
-   label treatment. */
+   the site meant to be read, so it takes the display size. */
 .post-header {
-  padding-block: 1.5rem 0.75rem;
+  padding-block: 2rem 0.75rem;
 }
 .post-header h1 {
   font-size: var(--fs-display);
-  font-weight: 300;
-  line-height: 1.2;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .post-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  margin-top: 0.5rem;
-  padding-bottom: 0.6rem;
-  border-bottom: var(--rule);
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: var(--rule-strong);
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-faint);
 }
@@ -971,18 +1254,20 @@ details.abstract p {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border: var(--rule);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 /* Post prose. Paragraphs and blockquotes are capped at `--measure` by the
    global rule, so this covers the rest of the long-form elements and the
    vertical rhythm between them.
-   The reset is `* { margin: 0 }`, so every gap here is declared. Listing the
-   pairs by hand missed `pre`, `table`, `img` and a blockquote after a
-   paragraph, so the rhythm comes from one flow rule instead: any direct child
-   that follows another gets a gap, and a heading pulls its own content closer. */
+   The reset is `* { margin: 0 }`, so every gap here is declared. The rhythm
+   comes from one flow rule: any direct child that follows another gets a gap,
+   and a heading pulls its own content closer. */
 .post-body {
-  padding-block: 1.25rem 1.5rem;
+  padding-block: 1.5rem 1.5rem;
+  font-size: 1.0625rem;
 }
 .post-body h2,
 .post-body h3,
@@ -991,74 +1276,94 @@ details.abstract p {
   max-width: var(--measure);
 }
 .post-body > * + * {
-  margin-top: 1rem;
+  margin-top: 1.1rem;
 }
 .post-body > h2 + *,
 .post-body > h3 + * {
   margin-top: 0.6rem;
 }
 .post-body h2 {
-  margin-top: 2.25rem;
-  font-size: 1.3rem;
-  font-weight: 600;
+  margin-top: 2.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
   text-wrap: balance;
 }
 .post-body h3 {
-  margin-top: 1.7rem;
-  font-size: 1.05rem;
+  margin-top: 1.8rem;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 .post-body ul,
 .post-body ol {
-  padding-left: 1.2rem;
+  padding-left: 1.3rem;
+}
+.post-body ul li::marker {
+  color: var(--gold-dark);
+}
+.post-body ol li::marker {
+  font-family: var(--font-mono);
+  color: var(--accent);
 }
 .post-body li + li {
   margin-top: 0.4rem;
 }
 .post-body blockquote {
-  border-left: var(--rule-strong);
-  padding-left: 1.1rem;
+  padding: 0.75rem 1.1rem;
   color: var(--text-muted);
+  background: var(--bg-soft);
+  border-left: 5px solid var(--california-gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .post-body hr {
+  height: 10px;
   border: 0;
-  border-top: var(--rule);
   margin-block: 2.5rem;
+  background: var(--stripe);
+  max-width: 6rem;
 }
 /* Highlighted blocks and display maths take the full column, because both are
    wide by nature and the measure cap would wrap them early. */
 .post-body pre {
-  background: var(--code-bg);
-  border: var(--rule);
   padding: 1rem 1.1rem;
   overflow-x: auto;
-  margin-block: 1.4rem;
+  margin-block: 1.5rem;
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: 5px 5px 0 var(--california-gold);
 }
 .post-body img {
-  border: var(--rule);
-  margin-block: 1.4rem;
+  margin-block: 1.5rem;
+  border: var(--panel-border);
+  border-radius: var(--radius);
 }
-/* A table is the third thing allowed to exceed the measure, and it scrolls
-   rather than pushing the page sideways. */
+/* A table is the third thing allowed to exceed the measure. */
 .post-body table {
   width: 100%;
   border-collapse: collapse;
-  margin-block: 1.4rem;
+  margin-block: 1.5rem;
   font-size: var(--fs-ui);
+  background: var(--surface);
 }
 .post-body th,
 .post-body td {
-  border: var(--rule);
-  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.75rem;
   text-align: left;
 }
 .post-body th {
-  background: var(--bg-soft);
-  font-weight: 600;
+  color: var(--on-accent);
+  background: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .post-back {
-  padding-bottom: 1.5rem;
+  padding-block: 1.5rem;
+  font-family: var(--font-mono);
   font-size: var(--fs-ui);
 }
 
@@ -1084,36 +1389,57 @@ details.abstract p {
 
 /* --------------------------------------------------------------------------
    16. Footer
+   The masthead's band again, with the racing stripe on its upper edge.
    -------------------------------------------------------------------------- */
 .site-footer {
-  margin-top: 2rem;
-  padding-block: 1.25rem;
-  border-top: var(--rule-strong);
+  margin-top: 3rem;
+  color: var(--on-accent);
+  background: var(--accent);
+}
+.site-footer::before {
+  content: '';
+  display: block;
+  height: 10px;
+  background: var(--stripe);
+  background-color: var(--bg);
+  transform: scaleY(-1); /* thick stripe against the band, thin one outside */
+}
+.site-footer .container {
+  padding-block: 1.5rem 2rem;
 }
 .footer-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.35rem 1.5rem;
+  gap: 0.75rem 1.5rem;
 }
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.15rem 1rem;
+  gap: 0.25rem 1.1rem;
   list-style: none;
   padding: 0;
   font-size: var(--fs-sm);
   line-height: var(--leading-ui);
 }
+.footer-links a {
+  color: var(--on-accent);
+}
+.footer-links a:hover {
+  color: var(--on-highlight);
+}
 .footer-meta {
-  color: var(--text-faint);
+  font-family: var(--font-mono);
+  color: var(--california-gold);
   font-size: var(--fs-xs);
 }
 .footer-note {
-  margin-top: 0.35rem;
-  color: var(--text-faint);
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
   font-size: var(--fs-micro);
+  letter-spacing: 0.04em;
+  color: rgb(251 246 234 / 0.8);
 }
 
 /* --------------------------------------------------------------------------
@@ -1125,40 +1451,61 @@ details.abstract p {
   left: -9999px;
   top: 0;
   padding: 0.5rem 0.9rem;
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--highlight);
+  color: var(--on-highlight);
   z-index: 100;
   font-size: var(--fs-ui);
+  font-weight: 600;
   text-decoration: none;
 }
 .skip-link:focus {
   left: 0;
-  color: var(--on-accent);
+  color: var(--on-highlight);
   text-decoration: none;
 }
 
+/* A chunky retro button: gold face, blue outline and offset shadow, and a
+   press that drops it onto its shadow. */
 .btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.75rem;
-  border: var(--rule-strong);
-  color: var(--accent);
-  background: var(--surface);
-  font-size: var(--fs-micro);
-  font-weight: 600;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
+  color: var(--on-highlight);
+  background: var(--highlight);
+  border: 2px solid var(--accent);
+  border-radius: var(--pill);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease;
 }
 .btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  color: var(--on-highlight);
+  background: var(--highlight);
   text-decoration: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--shadow-color);
+}
+.btn-secondary {
+  background: var(--surface);
+}
+.btn-secondary:hover {
+  background: var(--highlight);
 }
 .print-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 /* Empty-state message for content collections with no entries yet */
@@ -1181,15 +1528,22 @@ details.abstract p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+  .btn:hover,
+  .btn:active,
+  .pub-link:hover,
+  .pub-link:active {
+    transform: none;
+  }
 }
 
 /* --------------------------------------------------------------------------
    19. Print (CV → PDF from the browser)
-   Strips the chrome, sets sensible margins, and uses dark text on white.
-   Triggered by the "Print / Save as PDF" button on /cv and by Cmd-P.
+   Strips the chrome and the colour: black text on white, hairline rules, no
+   panels, shadows or fills. Triggered by the "Print / Save as PDF" button on
+   /cv and by Cmd-P.
 
-   This block is last in the file on purpose. It was previously followed by
-   three sections, and a rule of equal specificity after it silently won.
+   This block is last in the file on purpose: a rule of equal specificity after
+   it would silently win.
    -------------------------------------------------------------------------- */
 @media print {
   :root {
@@ -1202,12 +1556,18 @@ details.abstract p {
     --border: #d0d0d0;
     --border-strong: #c0c0c0;
     --accent: #000000;
+    --accent-strong: #000000;
+    --on-accent: #000000;
     --link: #000000;
+    --highlight: transparent;
+    --shadow-color: transparent;
+    --california-gold: transparent;
+    --rule: 1px solid var(--border);
+    --rule-strong: 1px solid var(--border-strong);
   }
   /* The rail is a sibling of the masthead, not a child, so it needs hiding in
-     its own right. Every class named here must still exist: the old list named
-     `.site-header` and `.site-nav`, and leaving stale names in it prints the
-     chrome on every page of the PDF. */
+     its own right. Every class named here must still exist, or the chrome
+     prints on every page of the PDF. */
   .masthead,
   .rail,
   .site-footer,
@@ -1220,8 +1580,11 @@ details.abstract p {
     display: block;
   }
   body {
+    display: block;
+    min-height: 0;
     font-size: 11pt;
     line-height: 1.45;
+    background: none;
   }
   .container,
   main .container {
@@ -1232,6 +1595,38 @@ details.abstract p {
   .page-body,
   .cv-section {
     padding-block: 0.5rem;
+  }
+  /* Panels become plain ruled lists on paper. */
+  .index-block,
+  .contact-list,
+  .identity {
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  .index-labels {
+    color: var(--text-faint);
+    background: none;
+    border-bottom: var(--rule-strong);
+  }
+  .index-labels,
+  .index-row,
+  .contact-row {
+    padding-inline: 0;
+  }
+  .tag,
+  .pub-link,
+  .status,
+  .skill,
+  .chip,
+  .cv-entry-date {
+    border-color: var(--border-strong);
+    background: none;
+    box-shadow: none;
+  }
+  .contact-figure {
+    transform: none;
+    box-shadow: none;
   }
   /* A row split across a page break loses its column context: the printed
      /publications/ PDF opened page 2 with the second line of a title and no
@@ -1244,8 +1639,8 @@ details.abstract p {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  /* Keeping rows whole is not enough on its own: the 2024 heading and its
-     column labels then sat alone at the foot of page 1 with their only row
+  /* Keeping rows whole is not enough on its own: a heading and its column
+     labels could sit alone at the foot of a page with their only row
      overleaf. A heading must not be the last thing on a page. */
   .year-heading,
   .index-labels,
