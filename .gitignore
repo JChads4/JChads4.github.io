@@ -34,3 +34,19 @@ profile.jpeg
 # local verification output (screenshots, printed PDFs, preview logs)
 .shots/
 .preview.log
+
+# Private documents. Anything carrying personal contact details (phone
+# numbers, home address, referees' names and emails) stays on your machine and
+# never enters this public repository. Put such files in private/, or name
+# them here.
+cv.tex
+private/
+
+# LaTeX build output
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.xdv
